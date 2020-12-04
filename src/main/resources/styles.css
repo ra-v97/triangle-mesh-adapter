@@ -1,10 +1,13 @@
 node {
-    fill-color: black;
+    fill-color: green;
     size: 10px;
     stroke-mode: plain;
     stroke-color: black;
     stroke-width: 1px;
     text-alignment: center;
+    text-style: bold;
+    text-size: 14px;
+    text-offset: -12px;
 }
 
 node.H {
@@ -46,6 +49,6 @@ node.interior {
 }
 
 edge.interioredge {
-    fill-color: green;
+    fill-color: pink;
     size: 5px;
 }

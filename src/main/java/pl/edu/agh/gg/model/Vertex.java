@@ -1,12 +1,7 @@
 package pl.edu.agh.gg.model;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.AbstractGraph;
-import org.graphstream.graph.implementations.AbstractNode;
 import pl.edu.agh.gg.common.Coordinates;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,37 +9,19 @@ public class Vertex extends GraphNode {
 
     private static final String DEFAULT_VERTEX_LABEL = "V";
 
-    public Vertex(AbstractGraph graph, UUID id, String label, Coordinates coordinates) {
-        super(graph, id, label, coordinates);
+    public Vertex(UUID id, String label, Coordinates coordinates) {
+        super(id, label, coordinates);
     }
 
-    /*
-        I am kind of sorry for this but THE MIGHTY api that library exposes
-        doesn't allow to override a default java hashcode method used to identify
-        objects in neighborMap. So firstly we need to find and retrieve object
-        with given properties and then run this function again with 'correct' reference.
-    */
-    @Override
-    public Edge getEdgeBetween(Node node) {
-        for (AbstractNode e : this.neighborMap.keySet()) {
-            if (Objects.equals(e.getId(), node.getId())) {
-                return super.getEdgeBetween(e);
-            }
-        }
-        return null;
+    public static VertexBuilder builder(UUID id) {
+        return new VertexBuilder(id);
     }
 
-    public static VertexBuilder builder(AbstractGraph graph, UUID id){
-            return new VertexBuilder(graph, id);
-    }
-
-    public static VertexBuilder builder(AbstractGraph graph){
-        return new VertexBuilder(graph);
+    public static VertexBuilder builder() {
+        return new VertexBuilder();
     }
 
     public static class VertexBuilder {
-
-        private final AbstractGraph graph;
 
         private final UUID id;
 
@@ -56,27 +33,28 @@ public class Vertex extends GraphNode {
 
         private Double zCoordinate;
 
-        public VertexBuilder(AbstractGraph graph) {
-            this(graph, UUID.randomUUID());
+        public VertexBuilder() {
+            this(UUID.randomUUID());
         }
 
-        public VertexBuilder(AbstractGraph graph, UUID id) {
-            this.graph = graph;
+        public VertexBuilder(UUID id) {
             this.id = id;
             this.xCoordinate = null;
             this.yCoordinate = null;
             this.zCoordinate = null;
         }
 
-        public VertexBuilder(AbstractGraph graph, UUID id, String label) {
-            this(graph, id);
+        public VertexBuilder(UUID id, String label) {
+            this(id);
             this.label = label;
         }
 
         public VertexBuilder setCoordinates(Coordinates coordinates) {
-            this.xCoordinate = coordinates.getX();
-            this.yCoordinate = coordinates.getY();
-            this.zCoordinate = coordinates.getZ();
+            if(coordinates != null){
+                this.xCoordinate = coordinates.getX();
+                this.yCoordinate = coordinates.getY();
+                this.zCoordinate = coordinates.getZ();
+            }
             return this;
         }
 
@@ -105,7 +83,7 @@ public class Vertex extends GraphNode {
                 return Optional.empty();
             }
             final String finalLabel = label != null ? label : DEFAULT_VERTEX_LABEL;
-            return Optional.of(new Vertex(graph, id, finalLabel, new Coordinates(xCoordinate, yCoordinate, zCoordinate)));
+            return Optional.of(new Vertex(id, finalLabel, new Coordinates(xCoordinate, yCoordinate, zCoordinate)));
         }
     }
 }

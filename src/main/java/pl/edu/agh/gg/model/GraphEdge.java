@@ -1,6 +1,5 @@
 package pl.edu.agh.gg.model;
 
-import org.graphstream.graph.implementations.AbstractEdge;
 import org.javatuples.Pair;
 import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.common.ElementAttributes;
@@ -11,7 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-public class GraphEdge extends AbstractEdge implements Identifiable, Styleable {
+public class GraphEdge implements Identifiable, Styleable {
 
     private final UUID id;
 
@@ -23,7 +22,6 @@ public class GraphEdge extends AbstractEdge implements Identifiable, Styleable {
 
     private GraphEdge(UUID id, GraphEdgeType type, String styleClass,
                       Pair<? extends GraphNode, ? extends GraphNode> edgeNodes) {
-        super(id.toString(), edgeNodes.getValue0(), edgeNodes.getValue1(), false);
         this.id = id;
         this.type = type;
         this.styleClass = styleClass != null ? styleClass : ElementAttributes.BORDER_CLASS;

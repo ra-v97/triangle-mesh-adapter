@@ -3,16 +3,20 @@ package pl.edu.agh.gg.model;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.javatuples.Pair;
 import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.common.ElementAttributes;
 import pl.edu.agh.gg.common.LayerDescriptor;
 import pl.edu.agh.gg.model.api.Identifiable;
+import pl.edu.agh.gg.visualization.DisplayableGraph;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class GraphModel extends MultiGraph implements Identifiable {
+public class GraphModel implements DisplayableGraph, Identifiable {
 
     private static final String DEFAULT_GRAPH_LABEL = "Graph model";
 
@@ -32,8 +36,11 @@ public class GraphModel extends MultiGraph implements Identifiable {
 
     private final Map<UUID, InteriorNode> interiors;
 
+    public GraphModel() {
+        this(UUID.randomUUID());
+    }
+
     public GraphModel(UUID id) {
-        super(id.toString());
         this.uuid = id;
         this.label = DEFAULT_GRAPH_LABEL;
 
@@ -81,8 +88,13 @@ public class GraphModel extends MultiGraph implements Identifiable {
                 });
     }
 
+    public Optional<Vertex> insertVertex(String label, Coordinates coordinates, LayerDescriptor layer) {
+        return insertVertex(UUID.randomUUID(), label, coordinates, layer);
+    }
+
+
     public Optional<Vertex> insertVertex(UUID id, String label, Coordinates coordinates, LayerDescriptor layer) {
-        return Vertex.builder(this, id)
+        return Vertex.builder(id)
                 .setCoordinates(coordinates)
                 .setLabel(label)
                 .build()
@@ -92,31 +104,27 @@ public class GraphModel extends MultiGraph implements Identifiable {
                     return vertex;
                 });
     }
-
-//    public void insertVertex(Vertex vertex, LayerDescriptor layer) {
-//        final Node node = this.addNode(vertex.getStringId());
-//        node.setAttribute(ElementAttributes.FROZEN_LAYOUT);
-//        node.setAttribute(ElementAttributes.LABEL, vertex.getLabel());
-//        node.setAttribute(ElementAttributes.XYZ, vertex.getXCoordinate(), vertex.getYCoordinate(), vertex.getZCoordinate());
-//        layerVerticesIds.put(layer, vertex.getUUID());
-//        vertices.put(vertex.getUUID(), vertex);
-//    }
+    public Optional<Vertex> removeVertex(Vertex vertex){
+        return removeVertex(vertex.getUUID());
+    }
 
     public Optional<Vertex> removeVertex(UUID id) {
         final Vertex vertex = vertices.remove(id);
         if (vertex != null) {
-            super.removeNode(vertex.getStringId());
             layerVerticesIds.keySet().forEach(layerDescriptor -> {
                 layerVerticesIds.remove(layerDescriptor, vertex.getUUID());
             });
-            interiors.values().stream()
+            final Set<UUID> interiorsToRemove = interiors.values().stream()
                     .filter(interior -> interior.getAdjacentVertices().contains(vertex))
                     .map(Identifiable::getUUID)
-                    .forEach(this::removeInterior);
-            edges.values().stream()
+                    .collect(Collectors.toSet());
+            interiorsToRemove.forEach(this::removeInterior);
+
+            final Set<UUID> edgesToRemove = edges.values().stream()
                     .filter(graphEdge -> graphEdge.getEdgeNodes().contains(vertex))
                     .map(Identifiable::getUUID)
-                    .forEach(this::deleteEdge);
+                    .collect(Collectors.toSet());
+            edgesToRemove.forEach(this::removeEdge);
             return Optional.of(vertex);
         }
         return Optional.empty();
@@ -131,8 +139,8 @@ public class GraphModel extends MultiGraph implements Identifiable {
                 verticesIterator.next());
     }
 
-    private Optional<InteriorNode> insertInterior(String label, LayerDescriptor layerDescriptor, Vertex v1, Vertex v2, Vertex v3) {
-        return InteriorNode.builder(this)
+    public Optional<InteriorNode> insertInterior(String label, LayerDescriptor layerDescriptor, Vertex v1, Vertex v2, Vertex v3) {
+        return InteriorNode.builder()
                 .setLabel(label)
                 .putVertex(v1)
                 .putVertex(v2)
@@ -148,29 +156,24 @@ public class GraphModel extends MultiGraph implements Identifiable {
                 });
     }
 
-//    private void insertInterior(InteriorNode interiorNode, LayerDescriptor layerDescriptor) {
-//        final Node node = this.addNode(interiorNode.getStringId());
-//        node.setAttribute(ElementAttributes.FROZEN_LAYOUT);
-//        node.setAttribute(ElementAttributes.XYZ, interiorNode.getXCoordinate(), interiorNode.getYCoordinate(), interiorNode.getZCoordinate());
-//        node.setAttribute(ElementAttributes.CLASS, ElementAttributes.INTERIOR_CLASS);
-//        node.setAttribute(ElementAttributes.LABEL, interiorNode.getLabel());
-//
-//    }
-
     public void removeInterior(InteriorNode interiorNode) {
         removeInterior(interiorNode.getUUID());
     }
 
     public void removeInterior(UUID id) {
-        layerInteriorIds.keySet().forEach(layerDescriptor -> {
-            layerInteriorIds.remove(layerDescriptor, id);
+        final Set<Pair<LayerDescriptor, UUID>> interiorsToRemove = layerInteriorIds.keySet()
+                .stream()
+                .map(layerDescriptor -> new Pair<>(layerDescriptor, id))
+                .collect(Collectors.toSet());
+        interiorsToRemove.forEach(interiorToRemove -> {
+            layerInteriorIds.remove(interiorToRemove.getValue0(), interiorToRemove.getValue1());
         });
-        edges.values().stream()
+        final Set<UUID> edgesToRemove = edges.values().stream()
                 .filter(graphEdge -> graphEdge.getEdgeNodes().contains(interiors.get(id)))
                 .map(Identifiable::getUUID)
-                .forEach(this::deleteEdge);
-        Optional.ofNullable(interiors.remove(id))
-                .ifPresent(interior -> this.removeNode(interior.getStringId()));
+                .collect(Collectors.toSet());
+        edgesToRemove.forEach(this::removeEdge);
+        interiors.remove(id);
     }
 
     public Optional<GraphEdge> insertEdge(InteriorNode n1, InteriorNode n2) {
@@ -201,20 +204,15 @@ public class GraphModel extends MultiGraph implements Identifiable {
                         layerEdgeIds.put(layerDescriptor, graphEdge.getUUID());
                     }
                     edges.put(graphEdge.getUUID(), graphEdge);
-//                    final Edge edge = this.addEdge(graphEdge.getStringId(), n1, n2);
-//                    if (uiClass != null) {
-//                        edge.setAttribute(ElementAttributes.CLASS, uiClass);
-//                    } else {
-//                        edge.setAttribute(ElementAttributes.CLASS, ElementAttributes.BORDER_CLASS);
-//                    }
                     return graphEdge;
                 });
     }
 
-    public void deleteEdge(GraphNode n1, GraphNode n2) {
-        edges.values().stream()
+    public void removeEdge(GraphNode n1, GraphNode n2) {
+        final Set<GraphEdge> edgesToRemove = edges.values().stream()
                 .filter(edge -> checkEdgeEndNodes(edge, n1, n2))
-                .forEach(edgeToRemove -> deleteEdge(edgeToRemove.getUUID()));
+                .collect(Collectors.toSet());
+        edgesToRemove.forEach(edgeToRemove -> removeEdge(edgeToRemove.getUUID()));
     }
 
     public boolean checkEdgeEndNodes(GraphEdge edge, GraphNode n1, GraphNode n2) {
@@ -223,17 +221,16 @@ public class GraphModel extends MultiGraph implements Identifiable {
                 || (edgeNodes.getValue0() == n2 && edgeNodes.getValue1() == n1);
     }
 
-    public void deleteEdge(UUID edgeId) {
+    public void removeEdge(UUID edgeId) {
         Optional.ofNullable(edges.get(edgeId))
-                .ifPresent(this::deleteEdge);
+                .ifPresent(this::removeEdge);
     }
 
-    public void deleteEdge(GraphEdge graphEdge) {
+    public void removeEdge(GraphEdge graphEdge) {
         edges.remove(graphEdge.getUUID());
         layerEdgeIds.keySet().forEach(layerDescriptor -> {
             layerInteriorIds.remove(layerDescriptor, graphEdge.getUUID());
         });
-        this.removeEdge(graphEdge.getStringId());
     }
 
     public Optional<GraphEdge> getEdge(UUID edgeId) {
@@ -355,5 +352,80 @@ public class GraphModel extends MultiGraph implements Identifiable {
     @Override
     public String getLabel() {
         return label;
+    }
+
+    @Override
+    public MultiGraph getGraphVisualization() {
+        final MultiGraph graphVisuals = new MultiGraph(getStringId());
+        final Map<UUID, Node> visualNodesMap = Maps.newHashMap();
+
+        vertices.values().stream()
+                .map(vertex -> new Pair<>(vertex.getUUID(), addVisibleVertex(graphVisuals, vertex)))
+                .forEach(pair -> visualNodesMap.put(pair.getValue0(), pair.getValue1()));
+
+        interiors.values().stream()
+                .map(interior -> new Pair<>(interior.getUUID(), addVisibleInterior(graphVisuals, interior)))
+                .forEach(pair -> visualNodesMap.put(pair.getValue0(), pair.getValue1()));
+
+        edges.values().forEach(edge -> addVisibleEdge(graphVisuals, visualNodesMap, edge));
+
+        return graphVisuals;
+    }
+
+    @Override
+    public MultiGraph getGraphVisualization(LayerDescriptor layerDescriptor) {
+        final MultiGraph graphVisuals = new MultiGraph(getStringId());
+        final Map<UUID, Node> visualNodesMap = Maps.newHashMap();
+
+        layerVerticesIds.get(layerDescriptor)
+                .stream()
+                .map(vertices::get)
+                .filter(Objects::nonNull)
+                .map(vertex -> new Pair<>(vertex.getUUID(), addVisibleVertex(graphVisuals, vertex)))
+                .forEach(pair -> visualNodesMap.put(pair.getValue0(), pair.getValue1()));
+
+        layerInteriorIds.get(layerDescriptor)
+                .stream()
+                .map(interiors::get)
+                .filter(Objects::nonNull)
+                .map(interior -> new Pair<>(interior.getUUID(), addVisibleInterior(graphVisuals, interior)))
+                .forEach(pair -> visualNodesMap.put(pair.getValue0(), pair.getValue1()));
+
+        layerEdgeIds.get(layerDescriptor)
+                .stream()
+                .map(edges::get)
+                .filter(edge -> edge.getType() != GraphEdge.GraphEdgeType.INTERIOR_INTERIOR)
+                .forEach(edge -> addVisibleEdge(graphVisuals, visualNodesMap, edge));
+
+        return graphVisuals;
+    }
+
+    private static Node addVisibleVertex(MultiGraph graphVisuals, Vertex vertex) {
+        final Node node = graphVisuals.addNode(vertex.getStringId());
+        node.setAttribute(ElementAttributes.FROZEN_LAYOUT);
+        node.setAttribute(ElementAttributes.LABEL, vertex.getLabel());
+        node.setAttribute(ElementAttributes.XYZ, vertex.getXCoordinate(), vertex.getYCoordinate(), vertex.getZCoordinate());
+        return node;
+    }
+
+    private static Node addVisibleInterior(MultiGraph graphVisuals, InteriorNode interiorNode) {
+        final Node node = graphVisuals.addNode(interiorNode.getStringId());
+        node.setAttribute(ElementAttributes.FROZEN_LAYOUT);
+        node.setAttribute(ElementAttributes.LABEL, interiorNode.getLabel());
+        node.setAttribute(ElementAttributes.XYZ, interiorNode.getXCoordinate(), interiorNode.getYCoordinate(),
+                interiorNode.getZCoordinate());
+        node.setAttribute(ElementAttributes.CLASS, ElementAttributes.INTERIOR_CLASS);
+        return node;
+    }
+
+    private static Edge addVisibleEdge(MultiGraph graphVisuals, Map<UUID, Node> visualNodesMap, GraphEdge graphEdge) {
+        final Node n1 = visualNodesMap.get(graphEdge.getEdgeNodes().getValue0().getUUID());
+        final Node n2 = visualNodesMap.get(graphEdge.getEdgeNodes().getValue1().getUUID());
+
+        final Edge edge = graphVisuals.addEdge(graphEdge.getStringId(), n1, n2);
+        edge.setAttribute(ElementAttributes.FROZEN_LAYOUT);
+        edge.setAttribute(ElementAttributes.LABEL, "");
+        edge.setAttribute(ElementAttributes.CLASS, graphEdge.getStyleClass());
+        return edge;
     }
 }

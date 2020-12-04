@@ -2,7 +2,6 @@ package pl.edu.agh.gg.model;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import org.graphstream.graph.implementations.AbstractGraph;
 import pl.edu.agh.gg.utils.PositionCalculator;
 
 import java.util.Iterator;
@@ -18,8 +17,8 @@ public class InteriorNode extends GraphNode {
 
     private final Set<InteriorNode> adjacentInteriors;
 
-    public InteriorNode(AbstractGraph graph, UUID id, String label, Vertex v1, Vertex v2, Vertex v3) {
-        super(graph, id, label, PositionCalculator.getInteriorPosition(v1, v2, v3));
+    public InteriorNode(UUID id, String label, Vertex v1, Vertex v2, Vertex v3) {
+        super(id, label, PositionCalculator.getInteriorPosition(v1, v2, v3));
         adjacentVertices = ImmutableSet.of(v1, v2, v3);
         adjacentInteriors = Sets.newHashSet();
     }
@@ -40,21 +39,19 @@ public class InteriorNode extends GraphNode {
         return Set.copyOf(adjacentInteriors);
     }
 
-    public static InteriorNodeBuilder builder(AbstractGraph graph, UUID id){
-        return new InteriorNodeBuilder(graph, id);
+    public static InteriorNodeBuilder builder(UUID id) {
+        return new InteriorNodeBuilder(id);
     }
 
-    public static InteriorNodeBuilder builder(AbstractGraph graph, UUID id, String label){
-        return new InteriorNodeBuilder(graph, id, label);
+    public static InteriorNodeBuilder builder(UUID id, String label) {
+        return new InteriorNodeBuilder(id, label);
     }
 
-    public static InteriorNodeBuilder builder(AbstractGraph graph){
-        return new InteriorNodeBuilder(graph);
+    public static InteriorNodeBuilder builder() {
+        return new InteriorNodeBuilder();
     }
 
     public static class InteriorNodeBuilder {
-
-        private final AbstractGraph graph;
 
         private final UUID id;
 
@@ -62,17 +59,16 @@ public class InteriorNode extends GraphNode {
 
         private Set<Vertex> tmpAdjacentVertices;
 
-        public InteriorNodeBuilder(AbstractGraph graph) {
-            this(graph, UUID.randomUUID());
+        public InteriorNodeBuilder() {
+            this(UUID.randomUUID());
         }
 
-        public InteriorNodeBuilder(AbstractGraph graph, UUID id, String label) {
-            this(graph, id);
+        public InteriorNodeBuilder(UUID id, String label) {
+            this(id);
             this.label = label;
         }
 
-        public InteriorNodeBuilder(AbstractGraph graph, UUID id) {
-            this.graph = graph;
+        public InteriorNodeBuilder(UUID id) {
             this.id = id;
             tmpAdjacentVertices = Sets.newHashSet();
         }
@@ -99,7 +95,7 @@ public class InteriorNode extends GraphNode {
                 final Vertex v1 = iterator.next();
                 final Vertex v2 = iterator.next();
                 final Vertex v3 = iterator.next();
-                return Optional.of(new InteriorNode(graph, id, finalLabel, v1, v2, v3));
+                return Optional.of(new InteriorNode(id, finalLabel, v1, v2, v3));
             }
             return Optional.empty();
         }

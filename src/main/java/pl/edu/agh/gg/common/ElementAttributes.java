@@ -16,9 +16,9 @@ public class ElementAttributes {
 
     public static String LABEL = "ui.label";
 
-    public static String CLASS = "ui.label";
+    public static String CLASS = "ui.class";
 
-    public static String INTERIOR_CLASS = "ui.label";
+    public static String INTERIOR_CLASS = "interior";
 
     public static String INTERIOR_EDGE_CLASS = "interioredge";
 
