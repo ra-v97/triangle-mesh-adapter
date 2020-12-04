@@ -66,6 +66,7 @@ public class Main {
 
         final GraphEdge ei = graphModel.insertEdge(i1, i2).get();
         //graphModel.removeInterior(i1.getUUID());
+        graphModel.removeEdge(e1);
         return graphModel;
     }
 }

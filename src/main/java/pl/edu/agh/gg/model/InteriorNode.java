@@ -32,11 +32,11 @@ public class InteriorNode extends GraphNode {
     }
 
     public Set<Vertex> getAdjacentVertices() {
-        return Set.copyOf(adjacentVertices);
+        return Sets.newHashSet(adjacentVertices);
     }
 
     public Set<InteriorNode> getAdjacentInteriors() {
-        return Set.copyOf(adjacentInteriors);
+        return Sets.newHashSet(adjacentInteriors);
     }
 
     public static InteriorNodeBuilder builder(UUID id) {

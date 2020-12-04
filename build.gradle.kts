@@ -1,6 +1,5 @@
 plugins {
     java
-    id("org.openjfx.javafxplugin") version "0.0.9"
 }
 
 group = "pl.edu.agh.gg"
@@ -13,17 +12,13 @@ repositories {
     }
 }
 
-javafx {
-    modules("javafx.controls", "javafx.fxml")
-}
-
 dependencies {
     implementation(group="log4j", name= "log4j", version=getProperty("LOG4J_VERSION"))
 
     implementation(group="org.graphstream", name= "gs-core", version=getProperty("GRAPHSTREAM_VERSION"))
     implementation(group="org.graphstream", name= "gs-ui", version=getProperty("GRAPHSTREAM_UI_VERSION"))
     implementation(group="org.graphstream", name= "gs-algo", version=getProperty("GRAPHSTREAM_VERSION"))
-    implementation(group="com.github.graphstream", name= "gs-ui-javafx", version=getProperty("GRAPHSTREAM_UI_VISUALIZER_VERSION"))
+//    implementation(group="org.graphstream", name= "gs-ui-javafx", version=getProperty("GRAPHSTREAM_UI_VISUALIZER_VERSION"))
 
     implementation(group="org.javatuples", name= "javatuples", version=getProperty("JAVA_TUPLES_VERSION"))
 
