@@ -22,6 +22,8 @@ dependencies {
 
     implementation(group="io.reactivex.rxjava3", name= "rxjava", version=getProperty("RXJAVA3_VERSION"))
 
+    implementation(group="com.google.guava", name= "guava", version=getProperty("GUAVA_VERSION"))
+
     testImplementation(group="org.junit.jupiter", name= "junit-jupiter-api", version=getProperty("JUNIT_VERSION"))
     testRuntimeOnly(group="org.junit.jupiter", name= "junit-jupiter-engine", version=getProperty("JUNIT_VERSION"))
 }

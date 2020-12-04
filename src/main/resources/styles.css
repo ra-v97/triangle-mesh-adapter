@@ -1,0 +1,51 @@
+node {
+    fill-color: black;
+    size: 10px;
+    stroke-mode: plain;
+    stroke-color: black;
+    stroke-width: 1px;
+    text-alignment: center;
+}
+
+node.H {
+    fill-color: green;
+    size: 5px;
+}
+
+node.important {
+    fill-color: red;
+    shape: diamond;
+    size: 10px;
+}
+
+edge.interiors {
+    fill-color: blue;
+}
+
+edge.border {
+    fill-color: #777;
+    shadow-mode: plain;
+    shadow-width: 1px;
+    shadow-color: #FC0;
+    shadow-offset: 0px;
+}
+
+edge.face {
+    fill-color: blue;
+}
+
+edge.selected {
+    fill-color: blue;
+    size: 4px;
+}
+
+node.interior {
+    shape: cross;
+    size: 12px;
+    fill-color: pink;
+}
+
+edge.interioredge {
+    fill-color: green;
+    size: 5px;
+}
