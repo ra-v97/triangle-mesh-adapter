@@ -13,8 +13,8 @@ public class Main {
     public static void main(String[] args) {
         final GraphModel graph = createMultiLayerGraph();
         final Visualizer visualizer = new Visualizer(graph);
-        visualizer.visualize();
-        //visualizer.visualize(new LayerDescriptor(0));
+        //visualizer.visualize();
+        visualizer.visualize(new LayerDescriptor(0));
         //visualizer.visualize(new LayerDescriptor(1));
     }
 

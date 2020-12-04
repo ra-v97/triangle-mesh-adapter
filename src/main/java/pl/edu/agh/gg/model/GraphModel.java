@@ -229,7 +229,7 @@ public class GraphModel implements DisplayableGraph, Identifiable {
     public void removeEdge(GraphEdge graphEdge) {
         edges.remove(graphEdge.getUUID());
         layerEdgeIds.keySet().forEach(layerDescriptor -> {
-            layerInteriorIds.remove(layerDescriptor, graphEdge.getUUID());
+            layerEdgeIds.remove(layerDescriptor, graphEdge.getUUID());
         });
     }
 
@@ -394,6 +394,7 @@ public class GraphModel implements DisplayableGraph, Identifiable {
         layerEdgeIds.get(layerDescriptor)
                 .stream()
                 .map(edges::get)
+                .filter(Objects::nonNull)
                 .filter(edge -> edge.getType() != GraphEdge.GraphEdgeType.INTERIOR_INTERIOR)
                 .forEach(edge -> addVisibleEdge(graphVisuals, visualNodesMap, edge));
 
