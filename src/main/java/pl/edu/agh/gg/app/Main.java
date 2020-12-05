@@ -6,16 +6,32 @@ import pl.edu.agh.gg.model.GraphEdge;
 import pl.edu.agh.gg.model.GraphModel;
 import pl.edu.agh.gg.model.InteriorNode;
 import pl.edu.agh.gg.model.Vertex;
+import pl.edu.agh.gg.transformations.Transformation;
+import pl.edu.agh.gg.transformations.TransformationP1;
 import pl.edu.agh.gg.visualization.Visualizer;
 
 
 public class Main {
     public static void main(String[] args) {
-        final GraphModel graph = createMultiLayerGraph();
+        final GraphModel graph = createStartingGraph();
+        final Transformation transformation = new TransformationP1();
+        final InteriorNode startingNode = graph.getInteriors().stream().findFirst().get();
+
+        if (transformation.isTransformationApplicable(graph, startingNode)) {
+            System.out.println("Transforming");
+            transformation.transform(graph, startingNode);
+        }
+
         final Visualizer visualizer = new Visualizer(graph);
-        //visualizer.visualize();
-        visualizer.visualize(new LayerDescriptor(0));
-        //visualizer.visualize(new LayerDescriptor(1));
+        visualizer.visualize();
+//        visualizer.visualize(new LayerDescriptor(0));
+//        visualizer.visualize(new LayerDescriptor(1));
+    }
+
+    private static GraphModel createStartingGraph() {
+        final GraphModel graphModel = new GraphModel();
+        graphModel.insertStartingInterior("S", new LayerDescriptor(0), new Coordinates(0, 0, 0));
+        return graphModel;
     }
 
     private static GraphModel createSimpleGraph() {

@@ -2,6 +2,7 @@ package pl.edu.agh.gg.model;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.utils.PositionCalculator;
 
 import java.util.Iterator;
@@ -20,6 +21,12 @@ public class InteriorNode extends GraphNode {
     public InteriorNode(UUID id, String label, Vertex v1, Vertex v2, Vertex v3) {
         super(id, label, PositionCalculator.getInteriorPosition(v1, v2, v3));
         adjacentVertices = ImmutableSet.of(v1, v2, v3);
+        adjacentInteriors = Sets.newHashSet();
+    }
+
+    protected InteriorNode(UUID id, String label, Coordinates position) {
+        super(id, label, position);
+        adjacentVertices = ImmutableSet.of();
         adjacentInteriors = Sets.newHashSet();
     }
 
