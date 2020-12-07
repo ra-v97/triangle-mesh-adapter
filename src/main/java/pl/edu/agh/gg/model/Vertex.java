@@ -50,7 +50,7 @@ public class Vertex extends GraphNode {
         }
 
         public VertexBuilder setCoordinates(Coordinates coordinates) {
-            if(coordinates != null){
+            if (coordinates != null) {
                 this.xCoordinate = coordinates.getX();
                 this.yCoordinate = coordinates.getY();
                 this.zCoordinate = coordinates.getZ();

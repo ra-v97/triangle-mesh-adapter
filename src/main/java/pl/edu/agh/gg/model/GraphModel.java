@@ -156,6 +156,13 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                 });
     }
 
+    public StartingNode insertStartingInterior(String label, LayerDescriptor layerDescriptor, Coordinates coordinates) {
+        StartingNode startingNode = new StartingNode(UUID.randomUUID(), label, coordinates);
+        layerInteriorIds.put(layerDescriptor, startingNode.getUUID());
+        interiors.put(startingNode.getUUID(), startingNode);
+        return startingNode;
+    }
+
     public void removeInterior(InteriorNode interiorNode) {
         removeInterior(interiorNode.getUUID());
     }
