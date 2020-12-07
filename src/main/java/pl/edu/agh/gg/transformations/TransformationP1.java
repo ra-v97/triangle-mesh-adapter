@@ -6,7 +6,7 @@ import pl.edu.agh.gg.model.*;
 
 public class TransformationP1 implements Transformation {
     @Override
-    public boolean isTransformationApplicable(GraphModel graph, InteriorNode interior) {
+    public boolean isApplicable(GraphModel graph, InteriorNode interior) {
         return graph.getVertices().isEmpty() &&
                 graph.getEdges().isEmpty() &&
                 graph.getInteriors().size() == 1 &&
@@ -18,10 +18,10 @@ public class TransformationP1 implements Transformation {
         StartingNode startingNode = (StartingNode) graph.getInteriors().stream().findFirst().get();
         LayerDescriptor nextLayerDescriptor = graph.resolveInteriorLayer(startingNode.getUUID()).get().getNextLayerDescriptor();
         Coordinates stNoCo = startingNode.getCoordinates();
-        Coordinates v1Co = new Coordinates(stNoCo.getX() - 1, stNoCo.getY() - 1, stNoCo.getZ() + 1); // TODO: those coordinates will probably change to accommodate the size of the map
-        Coordinates v2Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY() - 1, stNoCo.getZ() + 1);
-        Coordinates v3Co = new Coordinates(stNoCo.getX() - 1, stNoCo.getY() + 1, stNoCo.getZ() + 1);
-        Coordinates v4Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY() + 1, stNoCo.getZ() + 1);
+        Coordinates v1Co = new Coordinates(stNoCo.getX() - 1, stNoCo.getY() - 1, stNoCo.getZ()); // TODO: those coordinates will probably change to accommodate the size of the map
+        Coordinates v2Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY() - 1, stNoCo.getZ());
+        Coordinates v3Co = new Coordinates(stNoCo.getX() - 1, stNoCo.getY() + 1, stNoCo.getZ());
+        Coordinates v4Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY() + 1, stNoCo.getZ());
 
         final Vertex v1 = graph.insertVertex("V1", v1Co, nextLayerDescriptor).get();
         final Vertex v2 = graph.insertVertex("V2", v2Co, nextLayerDescriptor).get();

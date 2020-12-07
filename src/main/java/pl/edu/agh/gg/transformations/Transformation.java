@@ -4,7 +4,7 @@ import pl.edu.agh.gg.model.GraphModel;
 import pl.edu.agh.gg.model.InteriorNode;
 
 public interface Transformation {
-    boolean isTransformationApplicable(GraphModel graph, InteriorNode interior);
+    boolean isApplicable(GraphModel graph, InteriorNode interior);
 
     void transform(GraphModel graph, InteriorNode interior);
 }

@@ -8,24 +8,35 @@ import pl.edu.agh.gg.model.InteriorNode;
 import pl.edu.agh.gg.model.Vertex;
 import pl.edu.agh.gg.transformations.Transformation;
 import pl.edu.agh.gg.transformations.TransformationP1;
+import pl.edu.agh.gg.transformations.TransformationP2;
 import pl.edu.agh.gg.visualization.Visualizer;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 public class Main {
     public static void main(String[] args) {
         final GraphModel graph = createStartingGraph();
-        final Transformation transformation = new TransformationP1();
-        final InteriorNode startingNode = graph.getInteriors().stream().findFirst().get();
+        List<Transformation> transformations = Arrays.asList(new TransformationP1(), new TransformationP2());
 
-        if (transformation.isTransformationApplicable(graph, startingNode)) {
-            System.out.println("Transforming");
-            transformation.transform(graph, startingNode);
+        for (int i = 0; i < 2; i ++) { // this will be replaced with a do-while loop when we have the logic for refining the triangles
+            InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
+            for (InteriorNode interior : interiors) {
+                for (Transformation t : transformations) {
+                    if (t.isApplicable(graph, interior)) {
+                        System.out.println("Executing transformation: " + t.getClass().getSimpleName() + " on interior" + interior.getLabel());
+                        t.transform(graph, interior);
+                    }
+                }
+            }
         }
 
         final Visualizer visualizer = new Visualizer(graph);
-        visualizer.visualize();
+//        visualizer.visualize();
 //        visualizer.visualize(new LayerDescriptor(0));
 //        visualizer.visualize(new LayerDescriptor(1));
+        visualizer.visualize(new LayerDescriptor(2));
     }
 
     private static GraphModel createStartingGraph() {
