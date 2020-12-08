@@ -1,6 +1,5 @@
 package pl.edu.agh.gg.transformations.utils;
 
-import org.javatuples.Pair;
 import pl.edu.agh.gg.model.InteriorNode;
 import pl.edu.agh.gg.model.Vertex;
 
@@ -17,5 +16,9 @@ public class TransformationUtils {
 
     public static Double get2DDistance(Vertex a, Vertex b) {
         return Math.sqrt(Math.pow((a.getXCoordinate() - b.getXCoordinate()), 2) + Math.pow((a.getYCoordinate() - b.getYCoordinate()), 2));
+    }
+
+    public static boolean isUpper(String s) {
+        return s.equals(s.toUpperCase());
     }
 }

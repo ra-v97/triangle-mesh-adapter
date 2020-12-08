@@ -1,23 +1,24 @@
 package pl.edu.agh.gg.transformations;
 
 import com.google.common.collect.Sets;
-import org.javatuples.Pair;
 import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.common.LayerDescriptor;
 import pl.edu.agh.gg.model.GraphModel;
 import pl.edu.agh.gg.model.InteriorNode;
-import pl.edu.agh.gg.model.StartingNode;
 import pl.edu.agh.gg.model.Vertex;
 import pl.edu.agh.gg.transformations.utils.TransformationUtils;
 import pl.edu.agh.gg.utils.PositionCalculator;
 
 import java.util.Set;
 
+import static pl.edu.agh.gg.transformations.utils.TransformationUtils.isUpper;
+
 public class TransformationP2 implements Transformation {
     @Override
     public boolean isApplicable(GraphModel graph, InteriorNode interior) {
         Vertex[] aV = interior.getAdjacentVertices().toArray(new Vertex[0]);
-        return interior.getAdjacentVertices().size() == 3 &&
+        return isUpper(interior.getLabel()) &&
+                interior.getAdjacentVertices().size() == 3 &&
                 graph.getEdgeBetweenNodes(aV[0], aV[1]).isPresent() &&
                 graph.getEdgeBetweenNodes(aV[1], aV[2]).isPresent() &&
                 graph.getEdgeBetweenNodes(aV[2], aV[0]).isPresent();
@@ -25,6 +26,8 @@ public class TransformationP2 implements Transformation {
 
     @Override
     public void transform(GraphModel graph, InteriorNode interior) {
+        interior.setLabel(interior.getLabel().toLowerCase());
+
         LayerDescriptor nextLayerDescriptor = graph.resolveInteriorLayer(interior.getUUID()).get().getNextLayerDescriptor();
         Set<Vertex> longestEdgeVertices = TransformationUtils.getLongestEdge(interior);
         Vertex other = Sets.difference(interior.getAdjacentVertices(), longestEdgeVertices).stream().findAny().get();

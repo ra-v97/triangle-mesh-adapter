@@ -10,7 +10,7 @@ public abstract class GraphNode implements Identifiable, Positionable {
 
     private final UUID id;
 
-    private final String label;
+    private String label;
 
     private Coordinates coordinates;
 
@@ -61,5 +61,9 @@ public abstract class GraphNode implements Identifiable, Positionable {
     @Override
     public String getLabel() {
         return label;
+    }
+
+    protected void setLabel(String label) {
+        this.label = label;
     }
 }

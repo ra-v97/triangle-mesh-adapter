@@ -46,6 +46,8 @@ public class InteriorNode extends GraphNode {
         return Sets.newHashSet(adjacentInteriors);
     }
 
+    public void setLabel(String label) { super.setLabel(label); }
+
     public static InteriorNodeBuilder builder(UUID id) {
         return new InteriorNodeBuilder(id);
     }

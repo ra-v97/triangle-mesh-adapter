@@ -2,20 +2,30 @@ package pl.edu.agh.gg.transformations;
 
 import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.common.LayerDescriptor;
-import pl.edu.agh.gg.model.*;
+import pl.edu.agh.gg.model.GraphModel;
+import pl.edu.agh.gg.model.InteriorNode;
+import pl.edu.agh.gg.model.StartingNode;
+import pl.edu.agh.gg.model.Vertex;
+
+import java.util.Optional;
+
+import static pl.edu.agh.gg.transformations.utils.TransformationUtils.isUpper;
 
 public class TransformationP1 implements Transformation {
     @Override
     public boolean isApplicable(GraphModel graph, InteriorNode interior) {
+        Optional<InteriorNode> startingNode = graph.getInteriors().stream().findFirst();
         return graph.getVertices().isEmpty() &&
                 graph.getEdges().isEmpty() &&
                 graph.getInteriors().size() == 1 &&
-                graph.getInteriors().stream().findFirst().get() instanceof StartingNode;
+                startingNode.get() instanceof StartingNode &&
+                isUpper(startingNode.get().getLabel());
     }
 
     @Override
     public void transform(GraphModel graph, InteriorNode interior) {
         StartingNode startingNode = (StartingNode) graph.getInteriors().stream().findFirst().get();
+        startingNode.setLabel(startingNode.getLabel().toLowerCase());
         LayerDescriptor nextLayerDescriptor = graph.resolveInteriorLayer(startingNode.getUUID()).get().getNextLayerDescriptor();
         Coordinates stNoCo = startingNode.getCoordinates();
         Coordinates v1Co = new Coordinates(stNoCo.getX() - 1, stNoCo.getY() - 1, stNoCo.getZ()); // TODO: those coordinates will probably change to accommodate the size of the map
