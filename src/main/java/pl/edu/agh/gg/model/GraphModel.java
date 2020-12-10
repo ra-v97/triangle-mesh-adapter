@@ -1,5 +1,6 @@
 package pl.edu.agh.gg.model;
 
+import com.google.common.base.Verify;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -86,6 +87,14 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                             }
                     );
                 });
+    }
+
+    public Optional<Vertex> getVerticesOnLayerWithCords(Coordinates cord, LayerDescriptor layer){
+        return  layerVerticesIds.get(layer)
+                .stream()
+                .map(vertices::get)
+                .filter(x-> x.getCoordinates().equals(cord))
+                .findFirst();
     }
 
     public Optional<Vertex> insertVertex(String label, Coordinates coordinates, LayerDescriptor layer) {

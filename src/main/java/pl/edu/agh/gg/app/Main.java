@@ -35,8 +35,8 @@ public class Main {
         final Visualizer visualizer = new Visualizer(graph);
 //        visualizer.visualize();
 //        visualizer.visualize(new LayerDescriptor(0));
-//        visualizer.visualize(new LayerDescriptor(1));
-        visualizer.visualize(new LayerDescriptor(2));
+        visualizer.visualize(new LayerDescriptor(1));
+//        visualizer.visualize(new LayerDescriptor(2));
     }
 
     private static GraphModel createStartingGraph() {

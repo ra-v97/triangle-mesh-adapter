@@ -42,4 +42,8 @@ public final class LayerDescriptor {
     public int hashCode() {
         return Objects.hash(layerNo);
     }
+
+    public long getLayerNo() {
+        return layerNo;
+    }
 }
