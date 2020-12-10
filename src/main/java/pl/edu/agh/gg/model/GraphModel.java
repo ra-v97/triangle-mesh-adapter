@@ -1,5 +1,6 @@
 package pl.edu.agh.gg.model;
 
+import com.google.common.base.Verify;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
