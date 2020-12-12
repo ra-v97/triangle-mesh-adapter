@@ -28,7 +28,12 @@ public class TransformationP3 implements Transformation {
         for (int i = 0; i < 3; ++i) {
             for (int j = i + 1; j < 3; ++j) {
                 coordinatesBetweenNodes.add(new Coordinates(getCordsBetweenX(adjVertices[i], adjVertices[j]), getCordsBetweenY(adjVertices[i], adjVertices[j]), adjVertices[0].getZCoordinate()));
-                verticesBetweenAdjVertices.addAll(graph.getVerticesBetween(adjVertices[i], adjVertices[j]));
+                List<Vertex> vertBetween = graph.getVerticesBetween(adjVertices[i], adjVertices[j]);
+                verticesBetweenAdjVertices.addAll(vertBetween);
+
+                if (graph.getEdgeBetweenNodes(adjVertices[i], adjVertices[j]).isPresent() != vertBetween.isEmpty()) {
+                    return false;
+                }
             }
         }
 
