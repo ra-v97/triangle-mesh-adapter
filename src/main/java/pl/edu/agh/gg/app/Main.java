@@ -9,6 +9,7 @@ import pl.edu.agh.gg.model.Vertex;
 import pl.edu.agh.gg.transformations.Transformation;
 import pl.edu.agh.gg.transformations.TransformationP1;
 import pl.edu.agh.gg.transformations.TransformationP2;
+import pl.edu.agh.gg.transformations.TransformationP3;
 import pl.edu.agh.gg.visualization.Visualizer;
 
 import java.util.Arrays;
@@ -17,10 +18,10 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        final GraphModel graph = createStartingGraph();
-        List<Transformation> transformations = Arrays.asList(new TransformationP1(), new TransformationP2());
+        final GraphModel graph = createGraphApplicableForP3();
+        List<Transformation> transformations = Arrays.asList(new TransformationP3());
 
-        for (int i = 0; i < 2; i ++) { // this will be replaced with a do-while loop when we have the logic for refining the triangles
+        for (int i = 0; i < 1; i++) { // this will be replaced with a do-while loop when we have the logic for refining the triangles
             InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
             for (InteriorNode interior : interiors) {
                 for (Transformation t : transformations) {
@@ -34,14 +35,38 @@ public class Main {
 
         final Visualizer visualizer = new Visualizer(graph);
 //        visualizer.visualize();
-//        visualizer.visualize(new LayerDescriptor(0));
-//        visualizer.visualize(new LayerDescriptor(1));
-        visualizer.visualize(new LayerDescriptor(2));
+        visualizer.visualize(new LayerDescriptor(0));
+        visualizer.visualize(new LayerDescriptor(1));
+//        visualizer.visualize(new LayerDescriptor(2));
     }
 
     private static GraphModel createStartingGraph() {
         final GraphModel graphModel = new GraphModel();
         graphModel.insertStartingInterior("S", new LayerDescriptor(0), new Coordinates(0, 0, 0));
+        return graphModel;
+    }
+
+    private static GraphModel createGraphApplicableForP3() {
+        final GraphModel graphModel = new GraphModel();
+        LayerDescriptor layerDescriptor = new LayerDescriptor(0);
+        Coordinates stNoCo = new Coordinates(0, 0, 0);
+
+        Coordinates v1Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY() + 1, stNoCo.getZ());
+        Coordinates v2Co = new Coordinates(stNoCo.getX() - 0.5, stNoCo.getY(), stNoCo.getZ()); // TODO: those coordinates will probably change to accommodate the size of the map
+        Coordinates v3Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY() - 1, stNoCo.getZ());
+        Coordinates v4Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY(), stNoCo.getZ());
+
+        final Vertex v1 = graphModel.insertVertex("V1", v1Co, layerDescriptor).get();
+        final Vertex v2 = graphModel.insertVertex("V2", v2Co, layerDescriptor).get();
+        final Vertex v3 = graphModel.insertVertex("V3", v3Co, layerDescriptor).get();
+        final Vertex v4 = graphModel.insertVertex("V4", v4Co, layerDescriptor).get();
+
+        graphModel.insertEdge(v1, v2, layerDescriptor);
+        graphModel.insertEdge(v1, v4, layerDescriptor);
+        graphModel.insertEdge(v2, v3, layerDescriptor);
+        graphModel.insertEdge(v3, v4, layerDescriptor);
+
+        graphModel.insertInterior("I", layerDescriptor, v1, v2, v3).get();
         return graphModel;
     }
 
