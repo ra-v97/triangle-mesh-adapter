@@ -29,4 +29,8 @@ public class TransformationUtils {
     public static boolean isUpper(String s) {
         return s.equals(s.toUpperCase());
     }
+
+    public static boolean isLower(String s) {
+        return s.equals(s.toLowerCase());
+    }
 }

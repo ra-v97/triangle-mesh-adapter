@@ -11,6 +11,7 @@ import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.common.ElementAttributes;
 import pl.edu.agh.gg.common.LayerDescriptor;
 import pl.edu.agh.gg.model.api.Identifiable;
+import pl.edu.agh.gg.transformations.utils.TransformationUtils;
 import pl.edu.agh.gg.visualization.DisplayableGraph;
 
 import java.util.*;
@@ -88,18 +89,9 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                 });
     }
 
-    public Optional<Vertex> getVerticesOnLayerWithCords(Coordinates cord, LayerDescriptor layer) {
-        return layerVerticesIds.get(layer)
-                .stream()
-                .map(vertices::get)
-                .filter(x -> x.getCoordinates().equals(cord))
-                .findFirst();
-    }
-
     public Optional<Vertex> insertVertex(String label, Coordinates coordinates, LayerDescriptor layer) {
         return insertVertex(UUID.randomUUID(), label, coordinates, layer);
     }
-
 
     public Optional<Vertex> insertVertex(UUID id, String label, Coordinates coordinates, LayerDescriptor layer) {
         return Vertex.builder(id)
@@ -300,13 +292,19 @@ public class GraphModel implements DisplayableGraph, Identifiable {
     }
 
     public List<Vertex> getVerticesBetween(Vertex beginning, Vertex end) {
-        // TODO Create if needed
-        return null;
+        return vertices.values().stream()
+                .filter(vertex -> isVertexBetween(vertex, beginning, end))
+                .filter(vertex -> isVertexLinkedWith(vertex, beginning, end))
+                .collect(Collectors.toList());
     }
 
     public Optional<Vertex> getVertexBetween(Vertex beginning, Vertex end) {
         // TODO Create if needed
         return Optional.empty();
+    }
+
+    private boolean isVertexLinkedWith(Vertex v, Vertex beginning, Vertex end) {
+        return getEdgeBetweenNodes(v, beginning).isPresent() && getEdgeBetweenNodes(v, end).isPresent();
     }
 
     private boolean isVertexBetween(Vertex v, Vertex beginning, Vertex end) {
