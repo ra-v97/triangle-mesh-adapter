@@ -193,7 +193,7 @@ public class GraphModel implements DisplayableGraph, Identifiable {
         return insertEdge(n1, n2, GraphEdge.GraphEdgeType.VERTEX_VERTEX, layerDescriptor, ElementAttributes.BORDER_CLASS);
     }
 
-    private Optional<GraphEdge> insertEdge(Vertex n1, InteriorNode n2, LayerDescriptor layerDescriptor) {
+    public Optional<GraphEdge> insertEdge(Vertex n1, InteriorNode n2, LayerDescriptor layerDescriptor) {
         return insertEdge(n1, n2, GraphEdge.GraphEdgeType.VERTEX_INTERIOR, layerDescriptor,
                 ElementAttributes.INTERIOR_EDGE_CLASS);
     }
