@@ -18,7 +18,19 @@ public class TransformationUtils {
         return Math.sqrt(Math.pow((a.getXCoordinate() - b.getXCoordinate()), 2) + Math.pow((a.getYCoordinate() - b.getYCoordinate()), 2));
     }
 
+    public static double getCordsBetweenX(Vertex a, Vertex b) {
+        return (a.getXCoordinate() + b.getXCoordinate()) / 2;
+    }
+
+    public static double getCordsBetweenY(Vertex a, Vertex b) {
+        return (a.getYCoordinate() + b.getYCoordinate()) / 2;
+    }
+
     public static boolean isUpper(String s) {
         return s.equals(s.toUpperCase());
+    }
+
+    public static boolean isLower(String s) {
+        return s.equals(s.toLowerCase());
     }
 }
