@@ -24,8 +24,12 @@ public abstract class GraphNode implements Identifiable, Positionable {
         this.coordinates = coordinates;
     }
 
-    public void rotate() {
-        coordinates = coordinates.getRotation();
+    public void rotate1() {
+        coordinates = coordinates.getRotation1();
+    }
+
+    public void rotate2() {
+        coordinates = coordinates.getRotation2();
     }
 
     @Override
@@ -63,7 +67,7 @@ public abstract class GraphNode implements Identifiable, Positionable {
         return label;
     }
 
-    protected void setLabel(String label) {
+    public void setLabel(String label) {
         this.label = label;
     }
 }

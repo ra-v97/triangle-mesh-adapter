@@ -349,8 +349,12 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                 - a.getY() * b.getX() * c.getZ();
     }
 
-    public void rotate() {
-        vertices.values().forEach(GraphNode::rotate);
+    public void rotate1() {
+        vertices.values().forEach(GraphNode::rotate1);
+    }
+
+    public void rotate2() {
+        vertices.values().forEach(GraphNode::rotate2);
     }
 
     @Override
