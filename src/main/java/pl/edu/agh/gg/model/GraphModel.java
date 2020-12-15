@@ -300,8 +300,14 @@ public class GraphModel implements DisplayableGraph, Identifiable {
     }
 
     public List<Vertex> getVerticesBetween(Vertex beginning, Vertex end) {
-        // TODO Create if needed
-        return null;
+        return vertices.values().stream()
+                .filter(vertex -> isVertexBetween(vertex, beginning, end))
+                .filter(vertex -> isVertexLinkedWith(vertex, beginning, end))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isVertexLinkedWith(Vertex v, Vertex beginning, Vertex end) {
+        return getEdgeBetweenNodes(v, beginning).isPresent() && getEdgeBetweenNodes(v, end).isPresent();
     }
 
     public Optional<Vertex> getVertexBetween(Vertex beginning, Vertex end) {

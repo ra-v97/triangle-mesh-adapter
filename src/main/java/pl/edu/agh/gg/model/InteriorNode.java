@@ -18,6 +18,7 @@ public class InteriorNode extends GraphNode {
 
     private final Set<InteriorNode> adjacentInteriors;
 
+
     public InteriorNode(UUID id, String label, Vertex v1, Vertex v2, Vertex v3) {
         super(id, label, PositionCalculator.getInteriorPosition(v1, v2, v3));
         adjacentVertices = ImmutableSet.of(v1, v2, v3);
