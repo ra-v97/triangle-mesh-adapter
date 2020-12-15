@@ -13,17 +13,10 @@ import scala.Array;
 import java.util.Optional;
 import java.util.Set;
 
-import static pl.edu.agh.gg.transformations.utils.TransformationUtils.isUpper;
+import static pl.edu.agh.gg.transformations.utils.TransformationUtils.*;
 
 public class TransformationP5 implements Transformation {
 
-    private double getCordsBetweenX(Vertex v0, Vertex v1){
-        return (v0.getXCoordinate() + v1.getXCoordinate())/2;
-    }
-
-    private double getCordsBetweenY(Vertex v0, Vertex v1){
-        return (v0.getYCoordinate() + v1.getYCoordinate())/2;
-    }
     @Override
     public boolean isApplicable(GraphModel graph, InteriorNode interior) {
         Vertex[] iV = interior.getAdjacentVertices().toArray(new Vertex[0]);
@@ -31,15 +24,15 @@ public class TransformationP5 implements Transformation {
 
         LayerDescriptor layer = graph.resolveInteriorLayer(interior.getUUID()).get();
         Optional<Vertex> v01 = graph.getVerticesOnLayerWithCords(
-                new Coordinates(getCordsBetweenX(iV[0],iV[1]),getCordsBetweenX(iV[0],iV[1]), iV[0].getZCoordinate()),
+                new Coordinates(getCordsBetweenX(iV[0],iV[1]),getCordsBetweenY(iV[0],iV[1]), iV[0].getZCoordinate()),
                 layer
         );
         Optional<Vertex> v02 = graph.getVerticesOnLayerWithCords(
-                new Coordinates(getCordsBetweenX(iV[0],iV[2]),getCordsBetweenX(iV[0],iV[2]), iV[0].getZCoordinate()),
+                new Coordinates(getCordsBetweenX(iV[0],iV[2]),getCordsBetweenY(iV[0],iV[2]), iV[0].getZCoordinate()),
                 layer
         );
         Optional<Vertex> v21 = graph.getVerticesOnLayerWithCords(
-                new Coordinates(getCordsBetweenX(iV[2],iV[1]),getCordsBetweenX(iV[2],iV[1]), iV[2].getZCoordinate()),
+                new Coordinates(getCordsBetweenX(iV[2],iV[1]),getCordsBetweenY(iV[2],iV[1]), iV[2].getZCoordinate()),
                 layer
         );
         // TODO TEST
@@ -74,15 +67,15 @@ public class TransformationP5 implements Transformation {
 
 
         final Vertex v01 = graph.insertVertex("V4",
-                new Coordinates(getCordsBetweenX(longest[0],longest[1]),getCordsBetweenX(longest[0],longest[1]), longest[0].getZCoordinate()),
+                new Coordinates(getCordsBetweenX(longest[0],longest[1]),getCordsBetweenY(longest[0],longest[1]), longest[0].getZCoordinate()),
                 nextLayerDescriptor
         ).get();
         final Vertex v02 = graph.insertVertex("V5",
-                new Coordinates(getCordsBetweenX(longest[0],other),getCordsBetweenX(longest[0],other), longest[0].getZCoordinate()),
+                new Coordinates(getCordsBetweenX(longest[0],other),getCordsBetweenY(longest[0],other), longest[0].getZCoordinate()),
                 nextLayerDescriptor
         ).get();
         final Vertex v21 = graph.insertVertex("V6",
-                new Coordinates(getCordsBetweenX(other,longest[1]),getCordsBetweenX(other,longest[1]), other.getZCoordinate()),
+                new Coordinates(getCordsBetweenX(other,longest[1]),getCordsBetweenY(other,longest[1]), other.getZCoordinate()),
                 nextLayerDescriptor
         ).get();
 

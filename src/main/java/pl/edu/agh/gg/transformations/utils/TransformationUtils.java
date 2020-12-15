@@ -6,6 +6,16 @@ import pl.edu.agh.gg.model.Vertex;
 import java.util.*;
 
 public class TransformationUtils {
+
+    public static double getCordsBetweenX(Vertex a, Vertex b) {
+        return (a.getXCoordinate() + b.getXCoordinate()) / 2;
+    }
+
+    public static double getCordsBetweenY(Vertex a, Vertex b) {
+        return (a.getYCoordinate() + b.getYCoordinate()) / 2;
+    }
+
+
     public static Set<Vertex> getLongestEdge(InteriorNode interior) {
         final Set<Vertex> vertices = interior.getAdjacentVertices();
         Vertex[][] cartesian = vertices.stream().flatMap(ai -> vertices.stream().map(bi -> new Vertex[]{ai, bi})).toArray(Vertex[][]::new);
