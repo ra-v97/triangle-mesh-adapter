@@ -20,14 +20,14 @@ public class Main {
 
         for (int i = 0; i < 2; i ++) { // this will be replaced with a do-while loop when we have the logic for refining the triangles
             InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
-            for (InteriorNode interior : interiors) {
-                for (Transformation t : transformations) {
-                    if (t.isApplicable(graph, interior)) {
-                        System.out.println("Executing transformation: " + t.getClass().getSimpleName() + " on interior" + interior.getLabel());
-                        t.transform(graph, interior);
-                    }
-                }
-            }
+//            for (InteriorNode interior : interiors) {
+//                for (Transformation t : transformations) {
+//                    if (t.isApplicable(graph, interior)) {
+//                        System.out.println("Executing transformation: " + t.getClass().getSimpleName() + " on interior" + interior.getLabel());
+//                        t.transform(graph, interior);
+//                    }
+//                }
+//            }
 
             for (DoubleInteriorTransformation t : doubleInteriorTransformations) {
                 for (InteriorNode interior1 : interiors) {
@@ -46,8 +46,8 @@ public class Main {
 
         System.out.println("aa");
         Visualizer visualizer = new Visualizer(graph);
-        visualizer.visualize(new LayerDescriptor(2));
-        graph.rotate2();
+//        visualizer.visualize(new LayerDescriptor(1));
+//        graph.rotate2();
         visualizer.visualize(new LayerDescriptor(2));
     }
 

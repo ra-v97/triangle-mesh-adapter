@@ -19,7 +19,24 @@ public class TransformationP7 implements DoubleInteriorTransformation {
         return (v0.getYCoordinate() + v1.getYCoordinate())/2;
     }
 
+    public class UpperLayerValidator {
+        public boolean isValid(List<Vertex> commonAdjacents, GraphModel graph) {
+            if (commonAdjacents.size() != 2
+                    || graph.getEdgeBetweenNodes(commonAdjacents.get(0), commonAdjacents.get(1)).isEmpty())
+                return false;
 
+            return true;
+        }
+    }
+
+    public class LowerLayerValidator {
+        public boolean isValid(GraphModel graph, InteriorNode firstInterior, InteriorNode secondInterior) {
+            if (!isLowerApplicable(graph, firstInterior) || !isLowerApplicable(graph, secondInterior))
+                return false;
+
+            return true;
+        }
+    }
 
     @Override
     public boolean isApplicable(GraphModel graph, InteriorNode firstInterior, InteriorNode secondInterior) {
@@ -40,12 +57,13 @@ public class TransformationP7 implements DoubleInteriorTransformation {
             }
         }
 
-        // Validate upper layer
-        if (commonAdjacents.size() != 2 || !graph.getEdgeBetweenNodes(commonAdjacents.get(0), commonAdjacents.get(1)).isPresent())
+        var upperLayerValidator = new UpperLayerValidator();
+        if(!upperLayerValidator.isValid(commonAdjacents, graph))
             return false;
 
         // Validate lower layer
-        if (!isLowerApplicable(graph, firstInterior) || !isLowerApplicable(graph, secondInterior))
+        var lowerLayerValidator = new LowerLayerValidator();
+        if (!lowerLayerValidator.isValid(graph, firstInterior, secondInterior))
             return false;
 
         ArrayList<Vertex> first3 = getVertexes(graph, firstInterior);
@@ -157,6 +175,7 @@ public class TransformationP7 implements DoubleInteriorTransformation {
             for (Vertex v3 : common) {
                 if (v3.equals(v2)) {
                     comm = true;
+                    break;
                 }
             }
             if (!comm) uncommonInterior2.add(v2);
@@ -208,7 +227,7 @@ public class TransformationP7 implements DoubleInteriorTransformation {
             }
 
             for (Vertex v : toChangeEdges) {
-                if (graph.getEdgeBetweenNodes(verts1.get(i), v).isEmpty()) {
+                if (!graph.getEdgeBetweenNodes(verts1.get(i), v).isPresent()) {
                     graph.insertEdge(verts1.get(i), v, nextLayerDescriptor);
                     graph.removeEdge(verts2.get(i), v);
                 }
@@ -238,7 +257,6 @@ public class TransformationP7 implements DoubleInteriorTransformation {
         }
     }
 
-    //XD
     private void sortVertices(ArrayList<Vertex> verts) {
         if (!verts.get(0).equals(connected))
             Collections.reverse(verts);

@@ -32,4 +32,8 @@ dependencies {
     testRuntimeOnly(group="org.junit.jupiter", name= "junit-jupiter-engine", version=getProperty("JUNIT_VERSION"))
 }
 
+tasks.test {
+    useJUnit()
+}
+
 fun getProperty(name: String): String = rootProject.properties[name] as String
