@@ -20,8 +20,6 @@ public class TransformationP2Test {
 
     private static final LayerDescriptor initialLayerDescriptor = new LayerDescriptor(0);
 
-    private static final Coordinates initialCoordinates = new Coordinates(0, 0, 0);
-
     private TransformationP2 transformation;
 
     private GraphModel graphModel;
@@ -221,9 +219,41 @@ public class TransformationP2Test {
     }
 
 
-//    TODO: how can coordinates be incorrect?
-//    @Test
-//    void transformationShouldNotExecuteForIncorrectCoordinatesInLeftSide() {}
+    @Test
+    void transformationShouldNotExecuteForIncorrectCoordinatesInLeftSide() {
+        GraphModel graph = new GraphModel();
+        Coordinates c1 = new Coordinates(0, 0, 0);
+        Coordinates c2 = new Coordinates(0, 0, 0);
+        Coordinates c3 = new Coordinates(0, 5, 0);
+
+        Vertex v1 = graph.insertVertex("v1", c1, initialLayerDescriptor).get();
+        Vertex v2 = graph.insertVertex("v2", c2, initialLayerDescriptor).get();
+        Vertex v3 = graph.insertVertex("v3", c3, initialLayerDescriptor).get();
+        graph.insertEdge(v1, v2, initialLayerDescriptor);
+        graph.insertEdge(v2, v3, initialLayerDescriptor);
+        graph.insertEdge(v1, v3, initialLayerDescriptor);
+        InteriorNode i = graph.insertInterior("I", initialLayerDescriptor, v1, v2, v3).get();
+
+        assertFalse(transformation.isApplicable(graph, i));
+    }
+
+    @Test
+    void transformationShouldNotExecuteForCollinearPointsInLeftSide() {
+        GraphModel graph = new GraphModel();
+        Coordinates c1 = new Coordinates(0, 0, 0);
+        Coordinates c2 = new Coordinates(0, 2, 0);
+        Coordinates c3 = new Coordinates(0, 5, 0);
+
+        Vertex v1 = graph.insertVertex("v1", c1, initialLayerDescriptor).get();
+        Vertex v2 = graph.insertVertex("v2", c2, initialLayerDescriptor).get();
+        Vertex v3 = graph.insertVertex("v3", c3, initialLayerDescriptor).get();
+        graph.insertEdge(v1, v2, initialLayerDescriptor);
+        graph.insertEdge(v2, v3, initialLayerDescriptor);
+        graph.insertEdge(v1, v3, initialLayerDescriptor);
+        InteriorNode i = graph.insertInterior("I", initialLayerDescriptor, v1, v2, v3).get();
+
+        assertFalse(transformation.isApplicable(graph, i));
+    }
 
     @Test
     void transformationShouldWorkWhenLeftSideIsSubgraphOfBiggerGraph() {
