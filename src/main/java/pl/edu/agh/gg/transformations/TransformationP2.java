@@ -12,6 +12,7 @@ import pl.edu.agh.gg.utils.PositionCalculator;
 import java.util.Set;
 
 import static pl.edu.agh.gg.transformations.utils.TransformationUtils.isUpper;
+import static pl.edu.agh.gg.utils.PositionCalculator.checkTriangleInequality;
 
 public class TransformationP2 implements Transformation {
     @Override
@@ -21,7 +22,8 @@ public class TransformationP2 implements Transformation {
                 interior.getAdjacentVertices().size() == 3 &&
                 graph.getEdgeBetweenNodes(aV[0], aV[1]).isPresent() &&
                 graph.getEdgeBetweenNodes(aV[1], aV[2]).isPresent() &&
-                graph.getEdgeBetweenNodes(aV[2], aV[0]).isPresent();
+                graph.getEdgeBetweenNodes(aV[2], aV[0]).isPresent() &&
+                checkTriangleInequality(aV[0].getCoordinates(), aV[1].getCoordinates(), aV[2].getCoordinates());
     }
 
     @Override
