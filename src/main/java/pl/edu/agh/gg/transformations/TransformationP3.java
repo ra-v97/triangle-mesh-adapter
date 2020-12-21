@@ -1,6 +1,7 @@
 package pl.edu.agh.gg.transformations;
 
 import com.google.common.collect.Sets;
+import org.checkerframework.checker.nullness.Opt;
 import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.common.LayerDescriptor;
 import pl.edu.agh.gg.model.GraphModel;
@@ -22,23 +23,21 @@ public class TransformationP3 implements Transformation {
             return false;
         }
 
-        List<Coordinates> coordinatesBetweenNodes = new ArrayList<>();
-        verticesBetweenAdjVertices = new ArrayList<>();
+        Set<Vertex> longestEdgeVertices = TransformationUtils.getLongestEdge(interior);
+        Vertex other = Sets.difference(interior.getAdjacentVertices(), longestEdgeVertices).stream().findAny().get();
+        Vertex[] longest = longestEdgeVertices.toArray(new Vertex[]{});
+        Coordinates coordsBetweenLongest = new Coordinates(getCordsBetweenX(longest[0], longest[1]),
+                getCordsBetweenY(longest[0], longest[1]),
+                longest[0].getZCoordinate());
 
-        for (int i = 0; i < 3; ++i) {
-            for (int j = i + 1; j < 3; ++j) {
-                coordinatesBetweenNodes.add(new Coordinates(getCordsBetweenX(adjVertices[i], adjVertices[j]), getCordsBetweenY(adjVertices[i], adjVertices[j]), adjVertices[0].getZCoordinate()));
-                List<Vertex> vertBetween = graph.getVerticesBetween(adjVertices[i], adjVertices[j]);
-                verticesBetweenAdjVertices.addAll(vertBetween);
-
-                if (graph.getEdgeBetweenNodes(adjVertices[i], adjVertices[j]).isPresent() != vertBetween.isEmpty()) {
-                    return false;
-                }
-            }
-        }
-
-        return verticesBetweenAdjVertices.size() == 1 &&
-                coordinatesBetweenNodes.contains(verticesBetweenAdjVertices.get(0).getCoordinates());
+        Optional<Vertex> vertBetween = graph.getVerticesBetween(longest[0], longest[1]).stream().findFirst();
+        return vertBetween.isPresent() &&
+                vertBetween.get().getCoordinates().equals(coordsBetweenLongest) &&
+                !vertBetween.get().equals(other) &&
+                graph.getEdgeBetweenNodes(longest[0], other).isPresent() &&
+                graph.getEdgeBetweenNodes(longest[1], other).isPresent() &&
+                graph.getEdgeBetweenNodes(longest[0], vertBetween.get()).isPresent() &&
+                graph.getEdgeBetweenNodes(longest[1], vertBetween.get()).isPresent();
     }
 
     @Override
@@ -47,12 +46,16 @@ public class TransformationP3 implements Transformation {
         LayerDescriptor nextLayerDescriptor = graph.resolveInteriorLayer(interior.getUUID()).get().getNextLayerDescriptor();
 
         Vertex[] adjVertices = interior.getAdjacentVertices().toArray(new Vertex[0]);
-        Vertex vertexBetween = verticesBetweenAdjVertices.get(0);
 
-        final Vertex v1 = graph.insertVertex("V1", adjVertices[0].getCoordinates(), nextLayerDescriptor).get();
-        final Vertex v2 = graph.insertVertex("V2", adjVertices[1].getCoordinates(), nextLayerDescriptor).get();
-        final Vertex v3 = graph.insertVertex("V3", adjVertices[2].getCoordinates(), nextLayerDescriptor).get();
-        final Vertex v4 = graph.insertVertex("V4", vertexBetween.getCoordinates(), nextLayerDescriptor).get();
+        Set<Vertex> longestEdgeVertices = TransformationUtils.getLongestEdge(interior);
+        Vertex other = Sets.difference(interior.getAdjacentVertices(), longestEdgeVertices).stream().findAny().get();
+        Vertex[] longest = longestEdgeVertices.toArray(new Vertex[]{});
+        Vertex vertBetween = graph.getVerticesBetween(longest[0], longest[1]).stream().findFirst().get();
+
+        final Vertex v1 = graph.insertVertex("V1", longest[0].getCoordinates(), nextLayerDescriptor).get();
+        final Vertex v2 = graph.insertVertex("V2", other.getCoordinates(), nextLayerDescriptor).get();
+        final Vertex v3 = graph.insertVertex("V3", longest[1].getCoordinates(), nextLayerDescriptor).get();
+        final Vertex v4 = graph.insertVertex("V4", vertBetween.getCoordinates(), nextLayerDescriptor).get();
 
         graph.insertEdge(v1, v4, nextLayerDescriptor);
         graph.insertEdge(v1, v2, nextLayerDescriptor);
@@ -66,6 +69,4 @@ public class TransformationP3 implements Transformation {
         graph.insertEdge(i1, interior);
         graph.insertEdge(i2, interior);
     }
-
-    List<Vertex> verticesBetweenAdjVertices = new ArrayList<>();
 }
