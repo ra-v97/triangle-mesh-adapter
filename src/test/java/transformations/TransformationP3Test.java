@@ -71,6 +71,47 @@ public class TransformationP3Test {
         return graphModel;
     }
 
+    private static GraphModel createLeftSideGraphWithFivelVertices(Coordinates c1, Coordinates c2, Coordinates c3, Coordinates c4, Coordinates c5) {
+        final GraphModel graphModel = new GraphModel();
+        LayerDescriptor layerDescriptor = new LayerDescriptor(0);
+
+        final Vertex v1 = graphModel.insertVertex("V1", c1, layerDescriptor).get();
+        final Vertex v2 = graphModel.insertVertex("V2", c2, layerDescriptor).get();
+        final Vertex v3 = graphModel.insertVertex("V3", c3, layerDescriptor).get();
+        final Vertex v4 = graphModel.insertVertex("V4", c4, layerDescriptor).get();
+        final Vertex v5 = graphModel.insertVertex("V5", c5, layerDescriptor).get();
+
+        graphModel.insertEdge(v1, v2, layerDescriptor);
+        graphModel.insertEdge(v1, v4, layerDescriptor);
+        graphModel.insertEdge(v2, v3, layerDescriptor);
+        graphModel.insertEdge(v3, v4, layerDescriptor);
+        graphModel.insertEdge(v3, v5, layerDescriptor);
+        graphModel.insertEdge(v1, v5, layerDescriptor);
+
+        graphModel.insertInterior("I", layerDescriptor, v1, v2, v3).get();
+        return graphModel;
+    }
+
+    private static GraphModel createLeftSideGraphWithTwoAdditionalVertices(Coordinates c1, Coordinates c2, Coordinates c3, Coordinates c4, Coordinates c5) {
+        final GraphModel graphModel = new GraphModel();
+        LayerDescriptor layerDescriptor = new LayerDescriptor(0);
+
+        final Vertex v1 = graphModel.insertVertex("V1", c1, layerDescriptor).get();
+        final Vertex v2 = graphModel.insertVertex("V2", c2, layerDescriptor).get();
+        final Vertex v3 = graphModel.insertVertex("V3", c3, layerDescriptor).get();
+        final Vertex v4 = graphModel.insertVertex("V4", c4, layerDescriptor).get();
+        final Vertex v5 = graphModel.insertVertex("V5", c5, layerDescriptor).get();
+
+        graphModel.insertEdge(v1, v2, layerDescriptor);
+        graphModel.insertEdge(v1, v4, layerDescriptor);
+        graphModel.insertEdge(v2, v5, layerDescriptor);
+        graphModel.insertEdge(v3, v5, layerDescriptor);
+        graphModel.insertEdge(v3, v4, layerDescriptor);
+
+        graphModel.insertInterior("I", layerDescriptor, v1, v2, v3).get();
+        return graphModel;
+    }
+
     private static GraphModel createValidLeftSideGraph() {
         return createLeftSideGraph(new Coordinates(1, 1, 0),
                 new Coordinates(0, 0, 0),
@@ -167,5 +208,41 @@ public class TransformationP3Test {
                 new Coordinates(1, -1, 0)));
         // Then
         assertFalse(transformation.isApplicable(graphModel, initialInteriorNode));
+    }
+
+    @Test
+    void transformationShouldNotExecuteWhenTwoAdditionalVerticesArePresent() {
+        // When
+        reloadGraphModel(createLeftSideGraphWithTwoAdditionalVertices(new Coordinates(1, 1, 0),
+                new Coordinates(0, 0, 0),
+                new Coordinates(1, -1, 0),
+                new Coordinates(1, 0, 0),
+                new Coordinates(0.5, 0.5, 0)));
+        // Then
+        assertFalse(transformation.isApplicable(graphModel, initialInteriorNode));
+    }
+
+    @Test
+    void transformationShouldNotExecuteWhenWrongZCord() {
+        // When
+        reloadGraphModel(createLeftSideGraph(
+                new Coordinates(1, -1, 1),
+                new Coordinates(0, 0, 0),
+                new Coordinates(1, 1, 0),
+                new Coordinates(1, 0, 0)));
+        // Then
+        assertFalse(transformation.isApplicable(graphModel, initialInteriorNode));
+    }
+
+    @Test
+    void transformationShouldExecuteWhenGraphIsBiggerButValid() {
+        // When
+        reloadGraphModel(createLeftSideGraphWithFivelVertices(new Coordinates(1, 1, 0),
+                new Coordinates(0, 0, 0),
+                new Coordinates(1, -1, 0),
+                new Coordinates(1, 0, 0),
+                new Coordinates(2, 0, 0)));
+        // Then
+        assertTrue(transformation.isApplicable(graphModel, initialInteriorNode));
     }
 }
