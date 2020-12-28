@@ -78,7 +78,7 @@ public class TransformationP3Test {
                 new Coordinates(1, 0, 0));
     }
 
-    private static GraphModel createLeftSideGraphWithAdditionalVertexAtShorterEdge() {
+    private static GraphModel createLeftSideGraphWithAdditionalVertexOnWrongEdge() {
         return createLeftSideGraph(new Coordinates(1, 1, 0),
                 new Coordinates(-2, 0, 0),
                 new Coordinates(1, -1, 0),
@@ -143,7 +143,7 @@ public class TransformationP3Test {
     @Test
     void transformationShouldNotExecuteWhenAdditionalVertexIsNotOnTheLongestEdge() {
         // When
-        reloadGraphModel(createLeftSideGraphWithAdditionalVertexAtShorterEdge());
+        reloadGraphModel(createLeftSideGraphWithAdditionalVertexOnWrongEdge());
         // Then
         assertFalse(transformation.isApplicable(graphModel, initialInteriorNode));
     }
