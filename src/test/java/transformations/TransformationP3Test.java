@@ -1,21 +1,17 @@
 package transformations;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.edu.agh.gg.common.Coordinates;
-import pl.edu.agh.gg.common.LayerDescriptor;
 import pl.edu.agh.gg.model.GraphEdge;
 import pl.edu.agh.gg.model.GraphModel;
 import pl.edu.agh.gg.model.InteriorNode;
 import pl.edu.agh.gg.model.Vertex;
 import pl.edu.agh.gg.transformations.TransformationP3;
+import pl.edu.agh.gg.transformations.fixtures.TransformationP3Fixtures;
 import utils.GraphTestUtils;
 
 import java.util.Collection;
-
 import java.util.NoSuchElementException;
-
-import pl.edu.agh.gg.transformations.fixtures.TransformationP3Fixtures;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,6 +72,7 @@ public class TransformationP3Test {
         graphModel.removeVertex(graphModel.getVertices()
                 .stream()
                 .filter(vertex -> vertex.getCoordinates().equals(new Coordinates(1, 1, 0))).findFirst().get());
+
         // Then
         assertThrows(NoSuchElementException.class, () -> transformation.transform(graphModel, initialInteriorNode)); // No interior present
     }
@@ -92,6 +89,7 @@ public class TransformationP3Test {
         graphModel.removeVertex(graphModel.getVertices()
                 .stream()
                 .filter(vertex -> vertex.getCoordinates().equals(new Coordinates(1, 0, 0))).findFirst().get());
+
         // Then
         assertFalse(transformation.isApplicable(graphModel, initialInteriorNode));
     }
@@ -107,6 +105,7 @@ public class TransformationP3Test {
         // When
         graphModel.removeEdge(graphModel.getEdges().stream()
                 .filter(edge -> edge.getType() == GraphEdge.GraphEdgeType.VERTEX_VERTEX).findFirst().get().getUUID());
+
         // Then
         assertFalse(transformation.isApplicable(graphModel, initialInteriorNode));
     }
@@ -128,9 +127,9 @@ public class TransformationP3Test {
         // Given
         var transformation = new TransformationP3();
         var graphModel = TransformationP3Fixtures.createLeftSideGraph(new Coordinates(1, 1, 0),
-                new Coordinates(-2, 0, 0),
+                new Coordinates(0, 0, 0),
                 new Coordinates(1, -1, 0),
-                new Coordinates(0.5, 0, 0));
+                new Coordinates(1, 0.5, 0));
         var initialInteriorNode = GraphTestUtils.resolveGraphInterior(graphModel)
                 .orElseThrow(IllegalStateException::new);
 
@@ -188,7 +187,7 @@ public class TransformationP3Test {
     void transformationShouldExecuteWhenGraphIsBiggerButValid() {
         // Given
         var transformation = new TransformationP3();
-        var graphModel = TransformationP3Fixtures.createLeftSideGraphWithFivelVertices(new Coordinates(1, 1, 0),
+        var graphModel = TransformationP3Fixtures.createLeftSideGraphWithFiveVertices(new Coordinates(1, 1, 0),
                 new Coordinates(0, 0, 0),
                 new Coordinates(1, -1, 0),
                 new Coordinates(1, 0, 0),
@@ -305,7 +304,7 @@ public class TransformationP3Test {
         transformation.transform(graphModel, initialInteriorNode);
 
         // Then
-        assertTrue(isEqual(graphModel, TransformationP3Fixtures.createValidL1eftSideGraphResult()));
+        assertTrue(isEqual(graphModel, TransformationP3Fixtures.createValidRightSideGraph()));
     }
 
     @Test
@@ -389,7 +388,7 @@ public class TransformationP3Test {
         transformation.transform(graphModel, initialInteriorNode);
 
         // Then
-        assertTrue(isEqual(graphModel, TransformationP3Fixtures.createValidLeftSideBigGraphResults()));
+        assertTrue(isEqual(graphModel, TransformationP3Fixtures.createValidRightSideBigGraph()));
     }
 
     static boolean isEqual(GraphModel g1, GraphModel g2) {

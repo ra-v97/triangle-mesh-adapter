@@ -45,8 +45,6 @@ public class TransformationP3 implements Transformation {
         interior.setLabel(interior.getLabel().toLowerCase());
         LayerDescriptor nextLayerDescriptor = graph.resolveInteriorLayer(interior.getUUID()).get().getNextLayerDescriptor();
 
-        Vertex[] adjVertices = interior.getAdjacentVertices().toArray(new Vertex[0]);
-
         Set<Vertex> longestEdgeVertices = TransformationUtils.getLongestEdge(interior);
         Vertex other = Sets.difference(interior.getAdjacentVertices(), longestEdgeVertices).stream().findAny().get();
         Vertex[] longest = longestEdgeVertices.toArray(new Vertex[]{});

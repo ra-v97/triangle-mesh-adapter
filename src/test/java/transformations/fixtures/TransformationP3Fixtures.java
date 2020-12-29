@@ -4,7 +4,6 @@ import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.common.LayerDescriptor;
 import pl.edu.agh.gg.model.GraphModel;
 import pl.edu.agh.gg.model.InteriorNode;
-import pl.edu.agh.gg.model.StartingNode;
 import pl.edu.agh.gg.model.Vertex;
 
 public class TransformationP3Fixtures {
@@ -27,7 +26,7 @@ public class TransformationP3Fixtures {
         return graphModel;
     }
 
-    public static GraphModel createLeftSideGraphAfterTransform(Coordinates c1, Coordinates c2, Coordinates c3, Coordinates c4) {
+    public static GraphModel createRightSideGraph(Coordinates c1, Coordinates c2, Coordinates c3, Coordinates c4) {
         // create layer 0
         final GraphModel graphModel = createLeftSideGraph(c1, c2, c3, c4);
 
@@ -49,7 +48,7 @@ public class TransformationP3Fixtures {
         graphModel.insertEdge(v2, v4, layerOneDescriptor);
 
         // interiors
-        var layerZeroInterior = (InteriorNode)graphModel.getInteriors().toArray()[0];
+        var layerZeroInterior = (InteriorNode) graphModel.getInteriors().toArray()[0];
         InteriorNode interiorI = graphModel.insertInterior("I", layerOneDescriptor, v1, v2, v4).get();
         InteriorNode interiorII = graphModel.insertInterior("I", layerOneDescriptor, v2, v3, v4).get();
 
@@ -90,7 +89,7 @@ public class TransformationP3Fixtures {
         return graphModel;
     }
 
-    public static GraphModel createLeftSideBigGraphAfterTransform(Coordinates c1, Coordinates c2, Coordinates c3, Coordinates c4, Coordinates c5, Coordinates c6) {
+    public static GraphModel createRightSideBigGraph(Coordinates c1, Coordinates c2, Coordinates c3, Coordinates c4, Coordinates c5, Coordinates c6) {
         // create layer 0
         final GraphModel graphModel = createLeftSideBigGraph(c1, c2, c3, c4, c5, c6);
 
@@ -112,7 +111,7 @@ public class TransformationP3Fixtures {
         graphModel.insertEdge(v3, v4, layerOneDescriptor);
 
         // interiors
-        var layerZeroInterior = (InteriorNode)graphModel.getInteriors().toArray()[0];
+        var layerZeroInterior = (InteriorNode) graphModel.getInteriors().toArray()[0];
         InteriorNode interiorI = graphModel.insertInterior("I", layerOneDescriptor, v1, v2, v4).get();
         InteriorNode interiorII = graphModel.insertInterior("I", layerOneDescriptor, v2, v3, v4).get();
 
@@ -139,7 +138,7 @@ public class TransformationP3Fixtures {
         return graphModel;
     }
 
-    public static GraphModel createLeftSideGraphWithFivelVertices(Coordinates c1, Coordinates c2, Coordinates c3, Coordinates c4, Coordinates c5) {
+    public static GraphModel createLeftSideGraphWithFiveVertices(Coordinates c1, Coordinates c2, Coordinates c3, Coordinates c4, Coordinates c5) {
         final GraphModel graphModel = new GraphModel();
         LayerDescriptor layerDescriptor = new LayerDescriptor(0);
 
@@ -170,10 +169,10 @@ public class TransformationP3Fixtures {
         final Vertex v4 = graphModel.insertVertex("V4", c4, layerDescriptor).get();
         final Vertex v5 = graphModel.insertVertex("V5", c5, layerDescriptor).get();
 
-        graphModel.insertEdge(v1, v2, layerDescriptor);
+        graphModel.insertEdge(v1, v5, layerDescriptor);
         graphModel.insertEdge(v1, v4, layerDescriptor);
         graphModel.insertEdge(v2, v5, layerDescriptor);
-        graphModel.insertEdge(v3, v5, layerDescriptor);
+        graphModel.insertEdge(v2, v3, layerDescriptor);
         graphModel.insertEdge(v3, v4, layerDescriptor);
 
         graphModel.insertInterior("I", layerDescriptor, v1, v2, v3).get();
@@ -187,8 +186,8 @@ public class TransformationP3Fixtures {
                 new Coordinates(1, 0, 0));
     }
 
-    public static GraphModel createValidL1eftSideGraphResult() {
-        return createLeftSideGraphAfterTransform(new Coordinates(1, 1, 0),
+    public static GraphModel createValidRightSideGraph() {
+        return createRightSideGraph(new Coordinates(1, 1, 0),
                 new Coordinates(0, 0, 0),
                 new Coordinates(1, -1, 0),
                 new Coordinates(1, 0, 0));
@@ -210,8 +209,8 @@ public class TransformationP3Fixtures {
                 new Coordinates(2, 0, 0));
     }
 
-    public static GraphModel createValidLeftSideBigGraphResults() {
-        return createLeftSideBigGraphAfterTransform(new Coordinates(1, 1, 0),
+    public static GraphModel createValidRightSideBigGraph() {
+        return createRightSideBigGraph(new Coordinates(1, 1, 0),
                 new Coordinates(0, 0, 0),
                 new Coordinates(1, -1, 0),
                 new Coordinates(1, 0, 0),
