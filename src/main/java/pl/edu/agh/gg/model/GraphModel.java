@@ -164,6 +164,21 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                 });
     }
 
+    public Optional<InteriorNode> insertInterior(String label, LayerDescriptor layerDescriptor, Vertex v1, Vertex v2) {
+        return InteriorNode.builder()
+                .setLabel(label)
+                .putVertex(v1)
+                .putVertex(v2)
+                .build()
+                .map(interiorNode -> {
+                    layerInteriorIds.put(layerDescriptor, interiorNode.getUUID());
+                    interiors.put(interiorNode.getUUID(), interiorNode);
+                    insertEdge(v1, interiorNode, layerDescriptor);
+                    insertEdge(v2, interiorNode, layerDescriptor);
+                    return interiorNode;
+                });
+    }
+
     public StartingNode insertStartingInterior(String label, LayerDescriptor layerDescriptor, Coordinates coordinates) {
         StartingNode startingNode = new StartingNode(UUID.randomUUID(), label, coordinates);
         layerInteriorIds.put(layerDescriptor, startingNode.getUUID());

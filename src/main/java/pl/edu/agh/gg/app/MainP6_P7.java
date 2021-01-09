@@ -12,13 +12,14 @@ import java.util.List;
 
 public class MainP6_P7 {
     public static void main(String[] args) {
-        final GraphModel graph = createStartingGraph();
+        final GraphModel graph = TransformationP12.validGraph();
+//        final GraphModel graph = createStartingGraph();
         Visualizer startVisualizer = new Visualizer(graph);
         startVisualizer.visualize(new LayerDescriptor(0));
         startVisualizer.visualize(new LayerDescriptor(1));
         startVisualizer.visualize(new LayerDescriptor(2));
         List<Transformation> transformations = Arrays.asList(new TransformationP1(), new TransformationP2());
-        List<DoubleInteriorTransformation> doubleInteriorTransformations = Arrays.asList(new TransformationP6(), new TransformationP7());
+        List<DoubleInteriorTransformation> doubleInteriorTransformations = Arrays.asList(new TransformationP12());
 
         for (int i = 0; i < 2; i ++) { // this will be replaced with a do-while loop when we have the logic for refining the triangles
             InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
@@ -34,7 +35,7 @@ public class MainP6_P7 {
             for (DoubleInteriorTransformation t : doubleInteriorTransformations) {
                 for (InteriorNode interior1 : interiors) {
                     for (InteriorNode interior2 : interiors) {
-                        if (!interior1.equals(interior2) && t.isApplicable(graph, interior1, interior2)) {
+                        if (!equals(interior1, interior2) && t.isApplicable(graph, interior1, interior2)) {
                             System.out.println("Executing transformation: " + t.getClass().getSimpleName() + " on interiors " + interior1.getLabel() + " and " + interior2.getLabel());
                             t.transform(graph, interior1, interior2);
                         }
@@ -50,6 +51,10 @@ public class MainP6_P7 {
         visualizer.visualize(new LayerDescriptor(0));
         visualizer.visualize(new LayerDescriptor(1));
         visualizer.visualize(new LayerDescriptor(2));
+    }
+
+    private static boolean equals(InteriorNode interior1, InteriorNode interior2) {
+        return interior1.getLabel().equals(interior2.getLabel());
     }
 
     private static GraphModel createStartingGraph() {
