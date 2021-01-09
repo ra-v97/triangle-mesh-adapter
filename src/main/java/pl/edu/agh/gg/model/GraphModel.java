@@ -89,6 +89,14 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                 });
     }
 
+    public Optional<Vertex> getVerticesOnLayerWithCords(Coordinates cord, LayerDescriptor layer){
+        return  layerVerticesIds.get(layer)
+                .stream()
+                .map(vertices::get)
+                .filter(x-> x.getCoordinates().equals(cord))
+                .findFirst();
+    }
+
     public Optional<Vertex> insertVertex(String label, Coordinates coordinates, LayerDescriptor layer) {
         return insertVertex(UUID.randomUUID(), label, coordinates, layer);
     }

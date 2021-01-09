@@ -28,4 +28,11 @@ public final class PositionCalculator {
         return (v1.getZCoordinate() + v2.getZCoordinate() + v3.getZCoordinate()) / 3d;
     }
 
+    public static boolean checkTriangleInequality(Coordinates v1, Coordinates v2, Coordinates v3) {
+        double a = v1.distance(v2);
+        double b = v1.distance(v3);
+        double c = v2.distance(v3);
+
+        return (a + b) > c && (a + c) > b && (b + c) > a;
+    }
 }
