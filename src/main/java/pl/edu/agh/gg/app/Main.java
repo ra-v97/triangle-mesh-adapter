@@ -2,7 +2,10 @@ package pl.edu.agh.gg.app;
 
 import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.common.LayerDescriptor;
-import pl.edu.agh.gg.model.*;
+import pl.edu.agh.gg.model.GraphEdge;
+import pl.edu.agh.gg.model.GraphModel;
+import pl.edu.agh.gg.model.InteriorNode;
+import pl.edu.agh.gg.model.Vertex;
 import pl.edu.agh.gg.transformations.*;
 import pl.edu.agh.gg.visualization.Visualizer;
 
@@ -12,103 +15,69 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        final GraphModel graph = createStartingGraph();
-        Visualizer startVisualizer = new Visualizer(graph);
-        startVisualizer.visualize(new LayerDescriptor(2));
-        List<Transformation> transformations = Arrays.asList(new TransformationP1(), new TransformationP2());
-        List<DoubleInteriorTransformation> doubleInteriorTransformations = Arrays.asList(new TransformationP7());
+        final GraphModel graph = createGraphApplicableForP3();
+        List<Transformation> transformations = Arrays.asList(new TransformationP3());
 
-        for (int i = 0; i < 2; i ++) { // this will be replaced with a do-while loop when we have the logic for refining the triangles
+        for (int i = 0; i < 1; i++) { // this will be replaced with a do-while loop when we have the logic for refining the triangles
             InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
-//            for (InteriorNode interior : interiors) {
-//                for (Transformation t : transformations) {
-//                    if (t.isApplicable(graph, interior)) {
-//                        System.out.println("Executing transformation: " + t.getClass().getSimpleName() + " on interior" + interior.getLabel());
-//                        t.transform(graph, interior);
-//                    }
-//                }
-//            }
-
-            for (DoubleInteriorTransformation t : doubleInteriorTransformations) {
-                for (InteriorNode interior1 : interiors) {
-                    for (InteriorNode interior2 : interiors) {
-                        if (!interior1.equals(interior2) && t.isApplicable(graph, interior1, interior2)) {
-                            System.out.println("Executing transformation: " + t.getClass().getSimpleName() + " on interiors " + interior1.getLabel() + " and " + interior2.getLabel());
-                            t.transform(graph, interior1, interior2);
-                        }
+            for (InteriorNode interior : interiors) {
+                for (Transformation t : transformations) {
+                    if (t.isApplicable(graph, interior)) {
+                        System.out.println("Executing transformation: " + t.getClass().getSimpleName() + " on interior" + interior.getLabel());
+                        t.transform(graph, interior);
                     }
                 }
             }
         }
 
-//        System.out.println(graph.getInteriors().size());
-//        System.out.print(graph.getVertices().size());
+        List<DoubleInteriorTransformation> doubleInteriorTransformations =
+                Arrays.asList(new TransformationP6(), new TransformationP7());
+        InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
+        for (DoubleInteriorTransformation t : doubleInteriorTransformations) {
+            for (InteriorNode interior1 : interiors) {
+                for (InteriorNode interior2 : interiors) {
+                    if (!interior1.equals(interior2) && t.isApplicable(graph, interior1, interior2)) {
+                        System.out.println("Executing transformation: " + t.getClass().getSimpleName() + " on interiors " + interior1.getLabel() + " and " + interior2.getLabel());
+                        t.transform(graph, interior1, interior2);
+                    }
+                }
+            }
+        }
 
-        System.out.println("aa");
-        Visualizer visualizer = new Visualizer(graph);
-//        visualizer.visualize(new LayerDescriptor(1));
-//        graph.rotate2();
-        visualizer.visualize(new LayerDescriptor(2));
+        final Visualizer visualizer = new Visualizer(graph);
+//        visualizer.visualize();
+        visualizer.visualize(new LayerDescriptor(0));
+        visualizer.visualize(new LayerDescriptor(1));
+//        visualizer.visualize(new LayerDescriptor(2));
     }
 
     private static GraphModel createStartingGraph() {
-        GraphModel graphModel = new GraphModel();
+        final GraphModel graphModel = new GraphModel();
+        graphModel.insertStartingInterior("S", new LayerDescriptor(0), new Coordinates(0, 0, 0));
+        return graphModel;
+    }
 
-        //layer 0
-        LayerDescriptor layer0 = new LayerDescriptor(0);
-        StartingNode startingNode = graphModel.insertStartingInterior("e", layer0, new Coordinates(50, 50, 0));
+    private static GraphModel createGraphApplicableForP3() {
+        final GraphModel graphModel = new GraphModel();
+        LayerDescriptor layerDescriptor = new LayerDescriptor(0);
+        Coordinates stNoCo = new Coordinates(0, 0, 0);
 
-        //layer 1
-        LayerDescriptor layer1 = new LayerDescriptor(1);
-        Vertex v1_1 = graphModel.insertVertex("E1_1", new Coordinates(0, 100, 100), layer1).get();
-        Vertex v1_2 = graphModel.insertVertex("E1_2", new Coordinates(0, 0, 100), layer1).get();
-        Vertex v1_3 = graphModel.insertVertex("E1_2", new Coordinates(100, 0, 100), layer1).get();
-        Vertex v1_4 = graphModel.insertVertex("E1_2", new Coordinates(100, 100, 100), layer1).get();
+        Coordinates v1Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY() + 1, stNoCo.getZ());
+        Coordinates v2Co = new Coordinates(stNoCo.getX() - 0.5, stNoCo.getY(), stNoCo.getZ()); // TODO: those coordinates will probably change to accommodate the size of the map
+        Coordinates v3Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY() - 1, stNoCo.getZ());
+        Coordinates v4Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY(), stNoCo.getZ());
 
-        InteriorNode i1_1 = graphModel.insertInterior("i1_1", layer1, v1_1, v1_2, v1_4).get();
-        InteriorNode i1_2 = graphModel.insertInterior("i1_2", layer1, v1_2, v1_3, v1_4).get();
+        final Vertex v1 = graphModel.insertVertex("V1", v1Co, layerDescriptor).get();
+        final Vertex v2 = graphModel.insertVertex("V2", v2Co, layerDescriptor).get();
+        final Vertex v3 = graphModel.insertVertex("V3", v3Co, layerDescriptor).get();
+        final Vertex v4 = graphModel.insertVertex("V4", v4Co, layerDescriptor).get();
 
-        //edges between layer 0 and 1
-        graphModel.insertEdge(startingNode, i1_1);
-        graphModel.insertEdge(startingNode, i1_2);
+        graphModel.insertEdge(v1, v2, layerDescriptor);
+        graphModel.insertEdge(v1, v4, layerDescriptor);
+        graphModel.insertEdge(v2, v3, layerDescriptor);
+        graphModel.insertEdge(v3, v4, layerDescriptor);
 
-        //edges in layer 1
-        graphModel.insertEdge(v1_1, v1_2, layer1);
-        graphModel.insertEdge(v1_2, v1_3, layer1);
-        graphModel.insertEdge(v1_3, v1_4, layer1);
-        graphModel.insertEdge(v1_4, v1_1, layer1);
-        graphModel.insertEdge(v1_2, v1_4, layer1);
-
-        //layer 2
-        LayerDescriptor layer2 = new LayerDescriptor(2);
-        Vertex v2_1 = graphModel.insertVertex("E2_1", new Coordinates(0, 100, 200), layer2).get();
-        Vertex v2_2 = graphModel.insertVertex("E2_2", new Coordinates(0, 0, 200), layer2).get();
-        Vertex v2_3 = graphModel.insertVertex("E2_3", new Coordinates(100, 0, 200), layer2).get();
-        Vertex v2_4 = graphModel.insertVertex("E2_4", new Coordinates(100, 100, 200), layer2).get();
-        Vertex v2_5 = graphModel.insertVertex("E2_5", new Coordinates(100, 100, 200), layer2).get();
-        Vertex v2_6 = graphModel.insertVertex("E2_6", new Coordinates(50, 50, 200), layer2).get();
-        Vertex v2_7 = graphModel.insertVertex("E2_7", new Coordinates(50, 50, 200), layer2).get();
-
-        InteriorNode i2_1 = graphModel.insertInterior("I2_1", layer2, v2_1, v2_5, v2_6).get();
-        InteriorNode i2_2 = graphModel.insertInterior("I2_2", layer2, v2_1, v2_2, v2_6).get();
-        InteriorNode i2_3 = graphModel.insertInterior("I2_3", layer2, v2_2, v2_3, v2_7).get();
-        InteriorNode i2_4 = graphModel.insertInterior("I2_4", layer2, v2_3, v2_4, v2_7).get();
-
-        //edges between layer 1 and 2
-        graphModel.insertEdge(i1_1, i2_1);
-        graphModel.insertEdge(i1_1, i2_2);
-        graphModel.insertEdge(i1_2, i2_3);
-        graphModel.insertEdge(i1_2, i2_4);
-
-        //edges in layer 2
-        graphModel.insertEdge(v2_1, v2_2, layer2);
-        graphModel.insertEdge(v2_1, v2_5, layer2);
-        graphModel.insertEdge(v2_2, v2_3, layer2);
-        graphModel.insertEdge(v2_3, v2_4, layer2);
-        graphModel.insertEdge(v2_4, v2_7, layer2);
-        graphModel.insertEdge(v2_7, v2_2, layer2);
-        graphModel.insertEdge(v2_2, v2_6, layer2);
-        graphModel.insertEdge(v2_5, v2_6, layer2);
+        graphModel.insertInterior("I", layerDescriptor, v1, v2, v3).get();
         return graphModel;
     }
 

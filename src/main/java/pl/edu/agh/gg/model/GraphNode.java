@@ -28,12 +28,8 @@ public abstract class GraphNode implements Identifiable, Positionable {
         this.coordinates = coordinates;
     }
 
-    public void rotate1() {
-        coordinates = coordinates.getRotation1();
-    }
-
-    public void rotate2() {
-        coordinates = coordinates.getRotation2();
+    public void rotate() {
+        coordinates = coordinates.getRotation();
     }
 
     @Override

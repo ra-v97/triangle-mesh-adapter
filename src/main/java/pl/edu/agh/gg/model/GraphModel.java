@@ -11,7 +11,6 @@ import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.common.ElementAttributes;
 import pl.edu.agh.gg.common.LayerDescriptor;
 import pl.edu.agh.gg.model.api.Identifiable;
-import pl.edu.agh.gg.transformations.utils.TransformationUtils;
 import pl.edu.agh.gg.visualization.DisplayableGraph;
 
 import java.util.*;
@@ -357,12 +356,8 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                 - a.getY() * b.getX() * c.getZ();
     }
 
-    public void rotate1() {
-        vertices.values().forEach(GraphNode::rotate1);
-    }
-
-    public void rotate2() {
-        vertices.values().forEach(GraphNode::rotate2);
+    public void rotate() {
+        vertices.values().forEach(GraphNode::rotate);
     }
 
     @Override

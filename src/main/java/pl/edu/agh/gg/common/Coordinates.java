@@ -50,12 +50,8 @@ public final class Coordinates {
         return new Coordinates(xs / 2d, ys / 2d, zs / 2d);
     }
 
-    public Coordinates getRotation1() {
+    public Coordinates getRotation() {
         return new Coordinates(y, z, x);
-    }
-
-    public Coordinates getRotation2() {
-        return new Coordinates(x, z, y);
     }
 
     @Override
