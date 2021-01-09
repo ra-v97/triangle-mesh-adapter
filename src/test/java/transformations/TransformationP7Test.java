@@ -1,10 +1,12 @@
-package pl.edu.agh.gg.transformations;
+package transformations;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import pl.edu.agh.gg.model.GraphEdge;
 import pl.edu.agh.gg.model.GraphModel;
 import pl.edu.agh.gg.model.InteriorNode;
 import pl.edu.agh.gg.model.Vertex;
+import pl.edu.agh.gg.transformations.DoubleInteriorTransformation;
+import pl.edu.agh.gg.transformations.TransformationP7;
 import pl.edu.agh.gg.transformations.fixtures.TransformationP7Fixtures;
 
 import java.util.Collection;

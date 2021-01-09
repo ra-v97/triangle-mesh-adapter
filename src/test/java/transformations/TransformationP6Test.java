@@ -1,13 +1,17 @@
-package pl.edu.agh.gg.transformations;
+package transformations;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import pl.edu.agh.gg.model.*;
+import pl.edu.agh.gg.transformations.DoubleInteriorTransformation;
+import pl.edu.agh.gg.transformations.TransformationP6;
 import pl.edu.agh.gg.transformations.fixtures.TransformationP6Fixtures;
 
 import java.util.Collection;
 import org.javatuples.Pair;
 
-import static org.junit.Assert .*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TransformationP6Test {
 
