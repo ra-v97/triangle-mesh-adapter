@@ -6,6 +6,7 @@ import pl.edu.agh.gg.model.InteriorNode;
 import pl.edu.agh.gg.model.Vertex;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Set;
 
 public class TransformationP6 implements DoubleInteriorTransformation {
@@ -50,8 +51,19 @@ public class TransformationP6 implements DoubleInteriorTransformation {
         ArrayList<Vertex> first3 = getVertexes(graph, firstInterior);
         ArrayList<Vertex> second3 = getVertexes(graph, secondInterior);
 
+        // Check order
+        if((first3.get(0).getXCoordinate() == second3.get(2).getXCoordinate()) && first3.get(0).getYCoordinate() == second3.get(2).getYCoordinate()) {
+            Collections.reverse(second3);
+        }
+
+        for(int i=0; i < 3; i++) {
+            if((first3.get(i).getXCoordinate() != second3.get(i).getXCoordinate()) || first3.get(i).getYCoordinate() != second3.get(i).getYCoordinate()) {
+                return false;
+            }
+        }
+
         for (int i=0; i < 3; i++) {
-            if (first3.get(i).equals(second3.get(i)))
+            if (first3.get(i).equals(second3.get(i)) || first3.get(i).equals(second3.get(2 - i)))
                 return false;
         }
 
@@ -200,6 +212,11 @@ public class TransformationP6 implements DoubleInteriorTransformation {
         // Validate lower layer
         ArrayList<Vertex> verts1 = getVertexes(graph, firstInterior);
         ArrayList<Vertex> verts2 = getVertexes(graph, secondInterior);
+
+        // Check order
+        if((verts1.get(0).getXCoordinate() == verts2.get(2).getXCoordinate()) && verts1.get(0).getYCoordinate() == verts2.get(2).getYCoordinate()) {
+            Collections.reverse(verts2);
+        }
 
         graph.removeEdge(verts2.get(0), verts2.get(1));
         graph.removeEdge(verts2.get(1), verts2.get(2));
