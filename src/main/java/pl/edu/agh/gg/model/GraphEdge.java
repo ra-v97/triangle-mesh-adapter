@@ -20,6 +20,14 @@ public class GraphEdge implements Identifiable, Styleable {
 
     private final Pair<? extends GraphNode, ? extends GraphNode> edgeNodes;
 
+
+    public boolean equals(GraphEdge other) {
+        return (edgeNodes.getValue0().equals(other.edgeNodes.getValue0())  ||
+                edgeNodes.getValue0().equals(other.edgeNodes.getValue1())) &&
+                (edgeNodes.getValue1().equals(other.edgeNodes.getValue1()) ||
+                        edgeNodes.getValue1().equals(other.edgeNodes.getValue0()));
+    }
+
     private GraphEdge(UUID id, GraphEdgeType type, String styleClass,
                       Pair<? extends GraphNode, ? extends GraphNode> edgeNodes) {
         this.id = id;
@@ -91,6 +99,16 @@ public class GraphEdge implements Identifiable, Styleable {
     public String getStyleClass() {
         return styleClass;
     }
+
+    @Override
+    public String toString() {
+        return "GraphEdge{" +
+                " e0=" + edgeNodes.getValue0() +
+                " e1=" + edgeNodes.getValue1() +
+
+                '}';
+    }
+
 
     public static class GraphEdgeBuilder {
 
