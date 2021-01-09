@@ -14,21 +14,28 @@ public class InteriorNode extends GraphNode {
 
     private static final String INTERIOR_DEFAULT_SYMBOL = "I";
 
-    private final ImmutableSet<Vertex> adjacentVertices;
+    private final Set<Vertex> adjacentVertices;
 
     private final Set<InteriorNode> adjacentInteriors;
 
     public InteriorNode(UUID id, String label, Vertex v1, Vertex v2, Vertex v3) {
         super(id, label, PositionCalculator.getInteriorPosition(v1, v2, v3));
-        adjacentVertices = ImmutableSet.of(v1, v2, v3);
+        adjacentVertices = Sets.newHashSet();
+        adjacentVertices.add(v1);
+        adjacentVertices.add(v2);
+        adjacentVertices.add(v3);
         adjacentInteriors = Sets.newHashSet();
     }
 
     protected InteriorNode(UUID id, String label, Coordinates position) {
         super(id, label, position);
-        adjacentVertices = ImmutableSet.of();
+        adjacentVertices = Sets.newHashSet();
         adjacentInteriors = Sets.newHashSet();
     }
+
+    public void addAdjecentVertex(Vertex vertex) { adjacentVertices.add(vertex); }
+
+    public void removeAdjacentVertex(Vertex vertex) { adjacentVertices.remove(vertex); }
 
     public void addAdjacentInteriorNode(InteriorNode node) {
         adjacentInteriors.add(node);

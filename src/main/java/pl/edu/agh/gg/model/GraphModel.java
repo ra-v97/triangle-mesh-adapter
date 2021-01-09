@@ -11,7 +11,6 @@ import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.common.ElementAttributes;
 import pl.edu.agh.gg.common.LayerDescriptor;
 import pl.edu.agh.gg.model.api.Identifiable;
-import pl.edu.agh.gg.transformations.utils.TransformationUtils;
 import pl.edu.agh.gg.visualization.DisplayableGraph;
 
 import java.util.*;
@@ -202,7 +201,7 @@ public class GraphModel implements DisplayableGraph, Identifiable {
         return insertEdge(n1, n2, GraphEdge.GraphEdgeType.VERTEX_VERTEX, layerDescriptor, ElementAttributes.BORDER_CLASS);
     }
 
-    private Optional<GraphEdge> insertEdge(Vertex n1, InteriorNode n2, LayerDescriptor layerDescriptor) {
+    public Optional<GraphEdge> insertEdge(Vertex n1, InteriorNode n2, LayerDescriptor layerDescriptor) {
         return insertEdge(n1, n2, GraphEdge.GraphEdgeType.VERTEX_INTERIOR, layerDescriptor,
                 ElementAttributes.INTERIOR_EDGE_CLASS);
     }
