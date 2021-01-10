@@ -1,4 +1,4 @@
-package pl.edu.agh.gg;
+package transformations;
 
 import org.graphstream.graph.Edge;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
-public class TestP5 {
+public class TransformationP5Test {
 
     @Test
     public void testTransformation() {

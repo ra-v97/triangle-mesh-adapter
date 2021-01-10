@@ -33,7 +33,7 @@ dependencies {
 }
 
 tasks.test {
-    useJUnitPlatform()
+    useJUnit()
 }
 
 fun getProperty(name: String): String = rootProject.properties[name] as String
