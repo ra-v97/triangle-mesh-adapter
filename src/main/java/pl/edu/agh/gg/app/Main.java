@@ -11,6 +11,7 @@ import pl.edu.agh.gg.transformations.TransformationP5;
 import pl.edu.agh.gg.visualization.Visualizer;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -51,6 +52,80 @@ public class Main {
         visualizer.visualize(new LayerDescriptor(1));
 //        visualizer.visualize(new LayerDescriptor(2));
     }
+
+
+    private static GraphModel graphNotApplicableForP5WrongCords(){
+        final GraphModel graphModel = new GraphModel();
+        LayerDescriptor layerDescriptor = new LayerDescriptor(0);
+        Coordinates stNoCo = new Coordinates(0, 0, 0);
+
+        Coordinates v1Co = new Coordinates(stNoCo.getX(), stNoCo.getY() + 1, stNoCo.getZ());
+        Coordinates v2Co = new Coordinates(stNoCo.getX(), stNoCo.getY(), stNoCo.getZ());
+        Coordinates v3Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY(), stNoCo.getZ());
+        Coordinates v12Co = new Coordinates(stNoCo.getX(), stNoCo.getY()+ 0.3, stNoCo.getZ());
+        Coordinates v23Co = new Coordinates(stNoCo.getX()+0.3, stNoCo.getY(), stNoCo.getZ());
+        Coordinates v31Co = new Coordinates(stNoCo.getX() +0.3, stNoCo.getY()+ 0.3, stNoCo.getZ());
+
+        final Vertex v1 = graphModel.insertVertex("V1", v1Co, layerDescriptor).get();
+        final Vertex v2 = graphModel.insertVertex("V2", v2Co, layerDescriptor).get();
+        final Vertex v3 = graphModel.insertVertex("V3", v3Co, layerDescriptor).get();
+        final Vertex v12 = graphModel.insertVertex("V12", v12Co, layerDescriptor).get();
+        final Vertex v23 = graphModel.insertVertex("V23", v23Co, layerDescriptor).get();
+        final Vertex v31 = graphModel.insertVertex("V31", v31Co, layerDescriptor).get();
+
+        graphModel.insertEdge(v1, v12, layerDescriptor);
+        graphModel.insertEdge(v12, v2, layerDescriptor);
+        graphModel.insertEdge(v2, v23, layerDescriptor);
+        graphModel.insertEdge(v23, v3, layerDescriptor);
+        graphModel.insertEdge(v3, v31, layerDescriptor);
+        graphModel.insertEdge(v31, v1, layerDescriptor);
+
+        graphModel.insertInterior("I", layerDescriptor, v1, v2, v3).get();
+        return graphModel;
+    }
+
+
+    public static  GraphModel testIsApplicableMissingNode() {
+        GraphModel graph = graphApplicableForP5();
+        Coordinates c = new Coordinates(0.0, 0.5, 0);
+        Vertex v = graph.getVertices().stream().filter(x -> x.getCoordinates().equals(c)).findFirst().get();
+        graph.removeVertex(v);
+        return graph;
+
+    }
+
+
+
+    private static GraphModel graphApplicableForP5(){
+        final GraphModel graphModel = new GraphModel();
+        LayerDescriptor layerDescriptor = new LayerDescriptor(0);
+        Coordinates stNoCo = new Coordinates(0, 0, 0);
+
+        Coordinates v1Co = new Coordinates(stNoCo.getX(), stNoCo.getY() + 1, stNoCo.getZ());
+        Coordinates v2Co = new Coordinates(stNoCo.getX(), stNoCo.getY(), stNoCo.getZ());
+        Coordinates v3Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY(), stNoCo.getZ());
+        Coordinates v12Co = new Coordinates(stNoCo.getX(), stNoCo.getY()+ 0.5, stNoCo.getZ());
+        Coordinates v23Co = new Coordinates(stNoCo.getX()+0.5, stNoCo.getY(), stNoCo.getZ());
+        Coordinates v31Co = new Coordinates(stNoCo.getX() +0.5, stNoCo.getY()+ 0.5, stNoCo.getZ());
+
+        final Vertex v1 = graphModel.insertVertex("V1", v1Co, layerDescriptor).get();
+        final Vertex v2 = graphModel.insertVertex("V2", v2Co, layerDescriptor).get();
+        final Vertex v3 = graphModel.insertVertex("V3", v3Co, layerDescriptor).get();
+        final Vertex v12 = graphModel.insertVertex("V12", v12Co, layerDescriptor).get();
+        final Vertex v23 = graphModel.insertVertex("V23", v23Co, layerDescriptor).get();
+        final Vertex v31 = graphModel.insertVertex("V31", v31Co, layerDescriptor).get();
+
+        graphModel.insertEdge(v1, v12, layerDescriptor);
+        graphModel.insertEdge(v12, v2, layerDescriptor);
+        graphModel.insertEdge(v2, v23, layerDescriptor);
+        graphModel.insertEdge(v23, v3, layerDescriptor);
+        graphModel.insertEdge(v3, v31, layerDescriptor);
+        graphModel.insertEdge(v31, v1, layerDescriptor);
+
+        graphModel.insertInterior("I", layerDescriptor, v1, v2, v3).get();
+        return graphModel;
+    }
+
 
     private static GraphModel createStartingGraph() {
         final GraphModel graphModel = new GraphModel();

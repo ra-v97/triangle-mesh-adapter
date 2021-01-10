@@ -43,6 +43,105 @@ public class TestP5 {
         assertTrue("transformation has proper output and is applicable", areGraphsEqual(graph, graph2));
     }
 
+    // TODO: brakuje wieszchołków, brakuje krawędzi, błędne wspóżędne
+    @Test
+    public void testIsApplicableMissingNode() {
+        GraphModel graph = graphApplicableForP5();
+        Coordinates c = new Coordinates(0.0, 0.5, 0);
+        Vertex v = graph.getVertices().stream().filter(x -> x.getCoordinates().equals(c)).findFirst().get();
+        Coordinates c1 = new Coordinates(0.0, 0, 0);
+        Coordinates c2 = new Coordinates(0.0, 1, 0);
+
+        Vertex v1 = graph.getVertices().stream().filter(x -> x.getCoordinates().equals(c1)).findFirst().get();
+        Vertex v2 = graph.getVertices().stream().filter(x -> x.getCoordinates().equals(c2)).findFirst().get();
+
+        LayerDescriptor layerDescriptor = new LayerDescriptor(0);
+        graph.insertEdge(v1, v2, layerDescriptor);
+        graph.removeVertex(v);
+
+        GraphModel graph2 = graphApplicableForP5();
+        Vertex v_ = graph2.getVertices().stream().filter(x -> x.getCoordinates().equals(c)).findFirst().get();
+        Vertex v1_ = graph2.getVertices().stream().filter(x -> x.getCoordinates().equals(c1)).findFirst().get();
+        Vertex v2_ = graph2.getVertices().stream().filter(x -> x.getCoordinates().equals(c2)).findFirst().get();
+        graph2.insertEdge(v1_, v2_, layerDescriptor);
+        graph2.removeVertex(v_);
+
+
+        List<Transformation> transformations = Arrays.asList(new TransformationP5());
+
+        for (int i = 0; i < 2; i ++) {
+            InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
+            for (InteriorNode interior : interiors) {
+                for (Transformation t : transformations) {
+                    if (t.isApplicable(graph, interior)) {
+                        t.transform(graph, interior);
+                    }
+                }
+            }
+        }
+
+        assertTrue("transformation was not applicable due to missing node", areGraphsEqual(graph, graph2));
+
+    }
+
+    @Test
+    public void testIsApplicableMissingEdge() {
+        GraphModel graph = graphApplicableForP5();
+        Coordinates c1 = new Coordinates(0.0, 0.5, 0);
+        Coordinates c2 = new Coordinates(0.0, 0, 0);
+
+        GraphEdge e = graph.getEdges().stream().filter(x ->
+                (x.getEdgeNodes().getValue0().getCoordinates().equals(c1) || x.getEdgeNodes().getValue0().getCoordinates().equals(c2)) &&
+                        (x.getEdgeNodes().getValue1().getCoordinates().equals(c1) || x.getEdgeNodes().getValue1().getCoordinates().equals(c2))
+        ).findFirst().get();
+        graph.removeEdge(e);
+
+        GraphModel graph2 = graphApplicableForP5();
+        GraphEdge e2 = graph2.getEdges().stream().filter(x ->
+                (x.getEdgeNodes().getValue0().getCoordinates().equals(c1) || x.getEdgeNodes().getValue0().getCoordinates().equals(c2)) &&
+                        (x.getEdgeNodes().getValue1().getCoordinates().equals(c1) || x.getEdgeNodes().getValue1().getCoordinates().equals(c2))
+        ).findFirst().get();
+        graph2.removeEdge(e2);
+
+        List<Transformation> transformations = Arrays.asList(new TransformationP5());
+
+        for (int i = 0; i < 2; i ++) {
+            InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
+            for (InteriorNode interior : interiors) {
+                for (Transformation t : transformations) {
+                    if (t.isApplicable(graph, interior)) {
+                        t.transform(graph, interior);
+                    }
+                }
+            }
+        }
+
+        assertTrue("transformation was not applicable due to missing edge", areGraphsEqual(graph, graph2));
+
+    }
+
+    @Test
+    public void testIsApplicableWrongCords() {
+        GraphModel graph = graphNotApplicableForP5WrongCords();
+        GraphModel graph2 = graphNotApplicableForP5WrongCords();
+
+        List<Transformation> transformations = Arrays.asList(new TransformationP5());
+
+        for (int i = 0; i < 2; i ++) {
+            InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
+            for (InteriorNode interior : interiors) {
+                for (Transformation t : transformations) {
+                    if (t.isApplicable(graph, interior)) {
+                        t.transform(graph, interior);
+                    }
+                }
+            }
+        }
+
+        assertTrue("transformation was not applicable due to wrong cords", areGraphsEqual(graph, graph2));
+
+    }
+
     @Test
     public void testIsApplicable() {
         GraphModel graph = graphNotApplicableForP5();
@@ -107,8 +206,9 @@ public class TestP5 {
 
         for (GraphEdge e1: el1){
             boolean found = false;
+            System.out.println("----");
             for (GraphEdge e2: el2){
-
+                System.out.println(e1 +" "+ e2);
                 if (e1.equals(e2)){
                     found = true;
                     break;
@@ -188,6 +288,36 @@ public class TestP5 {
 
     }
 
+
+    private GraphModel graphNotApplicableForP5WrongCords(){
+        final GraphModel graphModel = new GraphModel();
+        LayerDescriptor layerDescriptor = new LayerDescriptor(0);
+        Coordinates stNoCo = new Coordinates(0, 0, 0);
+
+        Coordinates v1Co = new Coordinates(stNoCo.getX(), stNoCo.getY() + 1, stNoCo.getZ());
+        Coordinates v2Co = new Coordinates(stNoCo.getX(), stNoCo.getY(), stNoCo.getZ());
+        Coordinates v3Co = new Coordinates(stNoCo.getX() + 1, stNoCo.getY(), stNoCo.getZ());
+        Coordinates v12Co = new Coordinates(stNoCo.getX(), stNoCo.getY()+ 0.3, stNoCo.getZ());
+        Coordinates v23Co = new Coordinates(stNoCo.getX()+0.3, stNoCo.getY(), stNoCo.getZ());
+        Coordinates v31Co = new Coordinates(stNoCo.getX() +0.3, stNoCo.getY()+ 0.3, stNoCo.getZ());
+
+        final Vertex v1 = graphModel.insertVertex("V1", v1Co, layerDescriptor).get();
+        final Vertex v2 = graphModel.insertVertex("V2", v2Co, layerDescriptor).get();
+        final Vertex v3 = graphModel.insertVertex("V3", v3Co, layerDescriptor).get();
+        final Vertex v12 = graphModel.insertVertex("V12", v12Co, layerDescriptor).get();
+        final Vertex v23 = graphModel.insertVertex("V23", v23Co, layerDescriptor).get();
+        final Vertex v31 = graphModel.insertVertex("V31", v31Co, layerDescriptor).get();
+
+        graphModel.insertEdge(v1, v12, layerDescriptor);
+        graphModel.insertEdge(v12, v2, layerDescriptor);
+        graphModel.insertEdge(v2, v23, layerDescriptor);
+        graphModel.insertEdge(v23, v3, layerDescriptor);
+        graphModel.insertEdge(v3, v31, layerDescriptor);
+        graphModel.insertEdge(v31, v1, layerDescriptor);
+
+        graphModel.insertInterior("I", layerDescriptor, v1, v2, v3).get();
+        return graphModel;
+    }
 
 
     private GraphModel graphApplicableForP5(){

@@ -35,7 +35,6 @@ public class TransformationP5 implements Transformation {
                 new Coordinates(getCordsBetweenX(iV[2],iV[1]),getCordsBetweenY(iV[2],iV[1]), iV[2].getZCoordinate()),
                 layer
         );
-        // TODO TEST
         return isUpper(interior.getLabel()) &&
                 interior.getAdjacentVertices().size() == 3 &&
                 v01.isPresent() && v02.isPresent() && v21.isPresent() &&
