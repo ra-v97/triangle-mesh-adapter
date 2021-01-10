@@ -18,6 +18,10 @@ public abstract class GraphNode implements Identifiable, Positionable {
         return other.getCoordinates().equals(this.getCoordinates());
     }
 
+    public boolean equalsIncludingId(GraphNode other) {
+        return other.getCoordinates().equals(this.getCoordinates()) && other.getUUID().equals(id);
+    }
+
     protected GraphNode(UUID id, String label, double xCoordinate, double yCoordinate, double zCoordinate) {
         this(id, label, new Coordinates(xCoordinate, yCoordinate, zCoordinate));
     }
