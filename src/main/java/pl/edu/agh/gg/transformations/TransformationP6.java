@@ -62,11 +62,14 @@ public class TransformationP6 implements DoubleInteriorTransformation {
             }
         }
 
-        for (int i=0; i < 3; i++) {
-            if (first3.get(i).equals(second3.get(i)) || first3.get(i).equals(second3.get(2 - i)))
-                return false;
-        }
-
+        if (first3.get(0).equals(second3.get(1)) || first3.get(0).equals(second3.get(2))
+            || first3.get(1).equals(second3.get(0)) || first3.get(1).equals(second3.get(2))
+            || first3.get(2).equals(second3.get(0)) || first3.get(2).equals(second3.get(1)))
+            return false;
+//        for (int i=0; i < 3; i++) {
+//            if (first3.get(i).equals(second3.get(i)) || first3.get(i).equals(second3.get(2 - i)))
+//
+//        }
         return true;
     }
 

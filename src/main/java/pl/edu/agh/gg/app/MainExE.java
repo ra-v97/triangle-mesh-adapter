@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 
-public class Main {
+public class MainExE {
     public static void main(String[] args) {
         GraphModel graph = new GraphModel();
         final Visualizer visualizer = new Visualizer(graph);
