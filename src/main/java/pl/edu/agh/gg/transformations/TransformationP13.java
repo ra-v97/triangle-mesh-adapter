@@ -8,9 +8,8 @@ import pl.edu.agh.gg.model.StartingNode;
 import pl.edu.agh.gg.model.Vertex;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class TransformationP12 implements DoubleInteriorTransformation {
+public class TransformationP13 implements DoubleInteriorTransformation {
 
     public class UpperLayerValidator {
         public boolean isValid(List<Vertex> commonAdjacents, GraphModel graph) {
@@ -63,7 +62,10 @@ public class TransformationP12 implements DoubleInteriorTransformation {
                 if (nextLayerCommonAdjacents.size() != 4)
                     continue;
                 if (graph.getEdgeBetweenNodes(nextLayerCommonAdjacents.get(0), nextLayerCommonAdjacents.get(1)).isEmpty()
-                        && graph.getEdgeBetweenNodes(nextLayerCommonAdjacents.get(2), nextLayerCommonAdjacents.get(3)).isEmpty())
+                        && nextLayerCommonAdjacents.get(2) == nextLayerCommonAdjacents.get(3))
+                    return true;
+                if (graph.getEdgeBetweenNodes(nextLayerCommonAdjacents.get(2), nextLayerCommonAdjacents.get(3)).isEmpty()
+                        && nextLayerCommonAdjacents.get(0) == nextLayerCommonAdjacents.get(1))
                     return true;
             }
         }
@@ -135,44 +137,41 @@ public class TransformationP12 implements DoubleInteriorTransformation {
         List<Vertex> verts1 = Arrays.asList(common.get(0), common.get(2));
         List<Vertex> verts2 = Arrays.asList(common.get(1), common.get(3));
 
-        for (int i = 0; i < 2; i++) {
-            Vertex merged = verts1.get(i);
-//            merged.setLabel(merged.getLabel() + "__merged");
-            ArrayList<Vertex> toChangeEdges = new ArrayList<>();
-            ArrayList<InteriorNode> toChangeEdges1 = new ArrayList<>();
+        int index = verts1.get(1) == verts2.get(1) ? 0 : 1;
+        Vertex merged = verts1.get(index);
+//        merged.setLabel(merged.getLabel() + "__merged");
+        ArrayList<Vertex> toChangeEdges = new ArrayList<>();
+        ArrayList<InteriorNode> toChangeEdges1 = new ArrayList<>();
 
 
-            // Edge Nodes
-            for (Vertex v : graph.getVertices()) {
-                if (graph.getEdgeBetweenNodes(verts2.get(i), v).isPresent()) {
-                    toChangeEdges.add(v);
-                }
-            }
-
-            for (Vertex v : toChangeEdges) {
-                if (!graph.getEdgeBetweenNodes(verts1.get(i), v).isPresent()) {
-                    graph.insertEdge(verts1.get(i), v, nextLayerDescriptor);
-                    graph.removeEdge(verts2.get(i), v);
-                }
-            }
-
-            // Interiors
-            for (InteriorNode n : graph.getInteriors()) {
-                if (n.getAdjacentVertices().contains(verts2.get(i))) {
-                    toChangeEdges1.add(n);
-                }
-            }
-            for (InteriorNode n : toChangeEdges1) {
-                graph.insertEdge(verts1.get(i), n, nextLayerDescriptor);
-                n.addAdjecentVertex(verts1.get(i));
-                graph.removeEdge(verts2.get(i), n);
-                n.removeAdjacentVertex(verts2.get(i));
+        // Edge Nodes
+        for (Vertex v : graph.getVertices()) {
+            if (graph.getEdgeBetweenNodes(verts2.get(index), v).isPresent()) {
+                toChangeEdges.add(v);
             }
         }
 
-        for (Vertex vert : verts2) {
-            graph.removeVertex(vert);
+        for (Vertex v : toChangeEdges) {
+            if (!graph.getEdgeBetweenNodes(verts1.get(index), v).isPresent()) {
+                graph.insertEdge(verts1.get(index), v, nextLayerDescriptor);
+                graph.removeEdge(verts2.get(index), v);
+            }
         }
+
+        // Interiors
+        for (InteriorNode n : graph.getInteriors()) {
+            if (n.getAdjacentVertices().contains(verts2.get(index))) {
+                toChangeEdges1.add(n);
+            }
+        }
+        for (InteriorNode n : toChangeEdges1) {
+            graph.insertEdge(verts1.get(index), n, nextLayerDescriptor);
+            n.addAdjecentVertex(verts1.get(index));
+            graph.removeEdge(verts2.get(index), n);
+            n.removeAdjacentVertex(verts2.get(index));
+        }
+
+        graph.removeVertex(verts2.get(index));
     }
 
     private List<Vertex> getCommonAdjacents(InteriorNode firstInterior, InteriorNode secondInterior) {
