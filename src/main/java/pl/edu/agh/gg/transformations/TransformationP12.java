@@ -22,9 +22,9 @@ public class TransformationP12 implements DoubleInteriorTransformation {
 
 
     public class UpperLayerValidator {
-        public boolean isValid(List<Vertex> commonAdjacents, GraphModel graph) {
-            if (commonAdjacents.size() != 2
-                    || graph.getEdgeBetweenNodes(commonAdjacents.get(0), commonAdjacents.get(1)).isEmpty())
+        public boolean isValid(List<Vertex> commonAdjacency, GraphModel graph) {
+            if (commonAdjacency.size() != 2
+                    || graph.getEdgeBetweenNodes(commonAdjacency.get(0), commonAdjacency.get(1)).isEmpty())
                 return false;
 
             return true;

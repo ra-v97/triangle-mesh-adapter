@@ -69,7 +69,7 @@ public class Main {
         ArrayList<Transformation> transformations = new ArrayList<>();
         transformations.add(new TransformationP1());
         transformations.add(new TransformationP2());
-        transformations.add(new TransformationP9());
+        //transformations.add(new TransformationP9());
 
         for (int i = 0; i < 2; i++) { // this will be replaced with a do-while loop when we have the logic for refining the triangles
             InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
