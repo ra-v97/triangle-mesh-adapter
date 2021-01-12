@@ -18,7 +18,7 @@ public class ProductionChainController {
     private final Deque<GraphModel> graphResolvingStages;
 
     public ProductionChainController(ControlDiagram controlDiagram, GraphModel initialGraph) {
-        this.initialGraph = new GraphModel(initialGraph);
+        this.initialGraph = initialGraph;
         this.graphResolvingStages = new ArrayDeque<>();
         this.controlDiagram = controlDiagram;
         this.graphResolvingStages.push(this.initialGraph);
@@ -52,6 +52,14 @@ public class ProductionChainController {
                             .findFirst()
                             .flatMap(interiorNode -> tryTransformation(transformation, interiorNode)));
         }
+    }
+
+    public Optional<GraphModel> activeStage() {
+        if (graphResolvingStages.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(graphResolvingStages.peekLast());
     }
 
     public Optional<GraphModel> previousStage() {
@@ -94,7 +102,7 @@ public class ProductionChainController {
         if (Objects.isNull(topStackGraph) || !transformation.isApplicable(topStackGraph, interiorNode)) {
             return Optional.empty();
         }
-        final GraphModel graphCopy = new GraphModel(topStackGraph);
+        final GraphModel graphCopy = topStackGraph;
 
         System.out.println("Executing transformation: "
                 + transformation.getClass().getSimpleName()

@@ -6,6 +6,9 @@ import pl.edu.agh.gg.model.GraphEdge;
 import pl.edu.agh.gg.model.GraphModel;
 import pl.edu.agh.gg.model.InteriorNode;
 import pl.edu.agh.gg.model.Vertex;
+import pl.edu.agh.gg.processing.ControlDiagram;
+import pl.edu.agh.gg.processing.ProductionChainController;
+import pl.edu.agh.gg.processing.StepDescriptor;
 import pl.edu.agh.gg.transformations.*;
 import pl.edu.agh.gg.transformations.TransformationP5;
 import pl.edu.agh.gg.visualization.Visualizer;
@@ -18,41 +21,40 @@ import java.util.List;
 
 
 public class Main {
+
+    private static final int stepsToDo = 4;
+
     public static void main(String[] args) {
+
         final GraphModel graph = createStartingGraph();
-        List<Transformation> transformations = Arrays.asList(new TransformationP1(), new TransformationP2());
 
-        for (int i = 0; i < 1; i++) { // this will be replaced with a do-while loop when we have the logic for refining the triangles
-            InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
-            for (InteriorNode interior : interiors) {
-                for (Transformation t : transformations) {
-                    if (t.isApplicable(graph, interior)) {
-                        System.out.println("Executing transformation: " + t.getClass().getSimpleName() + " on interior" + interior.getLabel());
-                        t.transform(graph, interior);
-                    }
-                }
-            }
+        final ControlDiagram controlDiagram = ControlDiagram.builder()
+                .addStep(new StepDescriptor(new LayerDescriptor(), new TransformationP1()))
+                .addStep(new StepDescriptor(new LayerDescriptor(1), new TransformationP9()))
+                .addStep(new StepDescriptor(new LayerDescriptor(1), new TransformationP9()))
+                .addStep(new StepDescriptor(new LayerDescriptor(2), new TransformationP12()))
+                .build();
+
+        final var productionChainController = new ProductionChainController(controlDiagram, graph);
+
+        // Initial graph
+        final Visualizer initialVisualizer = new Visualizer(graph);
+        initialVisualizer.visualize(new LayerDescriptor(0));
+
+        for (int i = 0; i < stepsToDo; i++) {
+            final int topLayer = i + 1;
+            productionChainController.nextStep()
+                    .ifPresent(graphModel -> {
+                        final Visualizer vs = new Visualizer(graph);
+                        vs.visualize(new LayerDescriptor(topLayer));
+                    });
         }
 
-        List<DoubleInteriorTransformation> doubleInteriorTransformations =
-                Arrays.asList(new TransformationP6(), new TransformationP7());
-        InteriorNode[] interiors = graph.getInteriors().toArray(new InteriorNode[0]);
-        for (DoubleInteriorTransformation t : doubleInteriorTransformations) {
-            for (InteriorNode interior1 : interiors) {
-                for (InteriorNode interior2 : interiors) {
-                    if (!interior1.equals(interior2) && t.isApplicable(graph, interior1, interior2)) {
-                        System.out.println("Executing transformation: " + t.getClass().getSimpleName() + " on interiors " + interior1.getLabel() + " and " + interior2.getLabel());
-                        t.transform(graph, interior1, interior2);
-                    }
-                }
-            }
-        }
-
-        final Visualizer visualizer = new Visualizer(graph);
-//        visualizer.visualize();
-        visualizer.visualize(new LayerDescriptor(0));
-        visualizer.visualize(new LayerDescriptor(1));
-//        visualizer.visualize(new LayerDescriptor(2));
+        // Full graph after transformations
+        productionChainController.activeStage().ifPresent(graphModel -> {
+            final Visualizer fullVisualizer = new Visualizer(graph);
+            fullVisualizer.visualize();
+        });
     }
 
     private static GraphModel createStartingGraph() {

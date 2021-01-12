@@ -62,7 +62,7 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                 ));
 
         graph.interiors.values().forEach(interior -> graph.resolveInteriorLayer(interior.getUUID())
-                .flatMap(layerDescriptor -> insertInterior(label, layerDescriptor, interior.getAdjacentVertices()))
+                .flatMap(layerDescriptor -> insertInterior(interior.getLabel(), layerDescriptor, interior.getAdjacentVertices()))
                 .ifPresent(newInterior -> interior.getAdjacentInteriors()
                         .forEach(newInterior::addAdjacentInteriorNode)));
 
@@ -140,6 +140,10 @@ public class GraphModel implements DisplayableGraph, Identifiable {
     }
 
     public Optional<InteriorNode> insertInterior(String label, LayerDescriptor layerDescriptor, Set<Vertex> vertices) {
+        if(vertices.size() == 0){
+            return Optional.of(insertStartingInterior(label, layerDescriptor));
+        }
+
         if (vertices.size() != 3) {
             return Optional.empty();
         }
@@ -178,6 +182,10 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                     insertEdge(v2, interiorNode, layerDescriptor);
                     return interiorNode;
                 });
+    }
+
+    public StartingNode insertStartingInterior(String label, LayerDescriptor layerDescriptor) {
+        return insertStartingInterior(label, layerDescriptor, new Coordinates(0,0,0));
     }
 
     public StartingNode insertStartingInterior(String label, LayerDescriptor layerDescriptor, Coordinates coordinates) {
@@ -296,8 +304,8 @@ public class GraphModel implements DisplayableGraph, Identifiable {
 
     public List<InteriorNode> getInteriorsOnLayer(LayerDescriptor layerDescriptor) {
         return Optional.ofNullable(layerInteriorIds.get(layerDescriptor))
-                .map(Collection::stream)
                 .map(uuidStream -> uuidStream
+                        .stream()
                         .map(interiors::get)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()))
