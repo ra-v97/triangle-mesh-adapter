@@ -5,10 +5,7 @@ import com.google.common.collect.Sets;
 import pl.edu.agh.gg.common.Coordinates;
 import pl.edu.agh.gg.utils.PositionCalculator;
 
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class InteriorNode extends GraphNode {
 
@@ -25,6 +22,14 @@ public class InteriorNode extends GraphNode {
         adjacentVertices.add(v1);
         adjacentVertices.add(v2);
         adjacentVertices.add(v3);
+        adjacentInteriors = new LinkedHashSet<>();
+    }
+
+    public InteriorNode(UUID id, String label, Vertex v1, Vertex v2) {
+        super(id, label, PositionCalculator.getInteriorPosition(v1, v2));
+        adjacentVertices = Sets.newHashSet();
+        adjacentVertices.add(v1);
+        adjacentVertices.add(v2);
         adjacentInteriors = Sets.newHashSet();
     }
 
@@ -59,7 +64,7 @@ public class InteriorNode extends GraphNode {
     }
 
     public Set<InteriorNode> getAdjacentInteriors() {
-        return Sets.newHashSet(adjacentInteriors);
+        return Sets.newLinkedHashSet(adjacentInteriors);
     }
 
     public void setLabel(String label) { super.setLabel(label); }
