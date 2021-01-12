@@ -20,12 +20,12 @@ public final class PositionCalculator {
                 (v1.getZCoordinate() + v2.getZCoordinate()) / 2d);
     }
 
-    public static Coordinates getInteriorPosition(Vertex v1, Vertex v2) {
-        return new Coordinates(
-                v2.getXCoordinate(),
-                v1.getYCoordinate(),
-                v1.getZCoordinate());
-    }
+//    public static Coordinates getInteriorPosition(Vertex v1, Vertex v2) {
+//        return new Coordinates(
+//                v2.getXCoordinate(),
+//                v1.getYCoordinate(),
+//                v1.getZCoordinate());
+//    }
 
     private static double getInteriorXCoordinate(Vertex v1, Vertex v2, Vertex v3) {
         return (v1.getXCoordinate() + v2.getXCoordinate() + v3.getXCoordinate()) / 3d;

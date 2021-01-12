@@ -33,14 +33,6 @@ public class InteriorNode extends GraphNode {
         adjacentInteriors = Sets.newHashSet();
     }
 
-    public InteriorNode(UUID id, String label, Vertex v1, Vertex v2) {
-        super(id, label, PositionCalculator.getInteriorPosition(v1, v2));
-        adjacentVertices = Sets.newHashSet();
-        adjacentVertices.add(v1);
-        adjacentVertices.add(v2);
-        adjacentInteriors = Sets.newHashSet();
-    }
-
     protected InteriorNode(UUID id, String label, Coordinates position) {
         super(id, label, position);
         adjacentVertices = Sets.newHashSet();

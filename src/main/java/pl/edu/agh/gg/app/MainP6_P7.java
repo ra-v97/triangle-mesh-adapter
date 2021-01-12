@@ -16,13 +16,8 @@ import java.util.List;
 
 public class MainP6_P7 {
     public static void main(String[] args) {
-        final GraphModel graph = TransformationP12.validGraph();
-//        final GraphModel graph = createStartingGraph();
-        Visualizer startVisualizer = new Visualizer(graph);
-        startVisualizer.visualize(new LayerDescriptor(0));
-        startVisualizer.visualize(new LayerDescriptor(1));
-        startVisualizer.visualize(new LayerDescriptor(2));
-        List<Transformation> transformations = Arrays.asList(new TransformationP1(), new TransformationP2());
+        final GraphModel graph = createStartingGraph();
+        List<Transformation> transformations = Arrays.asList();
         List<DoubleInteriorTransformation> doubleInteriorTransformations = Arrays.asList(new TransformationP12());
 
         for (int i = 0; i < 1; i ++) { // this will be replaced with a do-while loop when we have the logic for refining the triangles
@@ -39,7 +34,7 @@ public class MainP6_P7 {
             for (DoubleInteriorTransformation t : doubleInteriorTransformations) {
                 for (InteriorNode interior1 : interiors) {
                     for (InteriorNode interior2 : interiors) {
-                        if (!equals(interior1, interior2) && t.isApplicable(graph, interior1, interior2)) {
+                        if (!interior1.equals(interior2) && t.isApplicable(graph, interior1, interior2)) {
                             System.out.println("Executing transformation: " + t.getClass().getSimpleName() + " on interiors " + interior1.getLabel() + " and " + interior2.getLabel());
                             t.transform(graph, interior1, interior2);
                             System.out.println("transformation executed");
@@ -49,20 +44,17 @@ public class MainP6_P7 {
             }
         }
 
-//        System.out.println(graph.getInteriors().size());
-//        System.out.print(graph.getVertices().size());
+        System.out.println(graph.getInteriors().size());
+        System.out.print(graph.getVertices().size());
 
         Visualizer visualizer = new Visualizer(graph);
-        visualizer.visualize(new LayerDescriptor(0));
-        visualizer.visualize(new LayerDescriptor(1));
+//        visualizer.visualize(new LayerDescriptor(0));
+//        visualizer.visualize(new LayerDescriptor(1));
         visualizer.visualize(new LayerDescriptor(2));
     }
 
-    private static boolean equals(InteriorNode interior1, InteriorNode interior2) {
-        return interior1.getLabel().equals(interior2.getLabel());
-    }
 
-    private static GraphModel createStartingGraph() {
+    private static GraphModel createStartingGraph13() {
         GraphModel graphModel = new GraphModel();
 
         //layer 0
@@ -97,6 +89,62 @@ public class MainP6_P7 {
         Vertex v2_3 = graphModel.insertVertex("E2_3", new Coordinates(100, 0, 200), layer2).get();
         Vertex v2_4 = graphModel.insertVertex("E2_4", new Coordinates(100, 100, 200), layer2).get();
         Vertex v2_5 = graphModel.insertVertex("E2_5", new Coordinates(100, 100, 200), layer2).get();
+
+        InteriorNode i2_1 = graphModel.insertInterior("I2_1", layer2, v2_2, v2_5, v2_3).get();
+        InteriorNode i2_2 = graphModel.insertInterior("I2_2", layer2, v2_1, v2_2, v2_4).get();
+
+        //edges between layer 1 and 2
+        graphModel.insertEdge(i1_1, i2_1);
+        graphModel.insertEdge(i1_2, i2_2);
+
+        //edges in layer 2
+        graphModel.insertEdge(v2_1, v2_2, layer2);
+        graphModel.insertEdge(v2_2, v2_3, layer2);
+        graphModel.insertEdge(v2_3, v2_5, layer2);
+        graphModel.insertEdge(v2_1, v2_4, layer2);
+        graphModel.insertEdge(v2_2, v2_4, layer2);
+        graphModel.insertEdge(v2_2, v2_5, layer2);
+
+        return graphModel;
+    }
+
+
+
+    private static GraphModel createStartingGraph() {
+        GraphModel graphModel = new GraphModel();
+
+        //layer 0
+        LayerDescriptor layer0 = new LayerDescriptor(0);
+        StartingNode startingNode = graphModel.insertStartingInterior("e", layer0, new Coordinates(50, 50, 0));
+
+        //layer 1
+        LayerDescriptor layer1 = new LayerDescriptor(1);
+        Vertex v1_1 = graphModel.insertVertex("E1_1", new Coordinates(0, 100, 100), layer1).get();
+        Vertex v1_2 = graphModel.insertVertex("E1_2", new Coordinates(0, 0, 100), layer1).get();
+        Vertex v1_3 = graphModel.insertVertex("E1_3", new Coordinates(100, 0, 100), layer1).get();
+        Vertex v1_4 = graphModel.insertVertex("E1_4", new Coordinates(100, 100, 100), layer1).get();
+
+        InteriorNode i1_1 = graphModel.insertInterior("i1_1", layer1, v1_1, v1_2, v1_4).get();
+        InteriorNode i1_2 = graphModel.insertInterior("i1_2", layer1, v1_2, v1_3, v1_4).get();
+
+        //edges between layer 0 and 1
+        graphModel.insertEdge(startingNode, i1_1);
+        graphModel.insertEdge(startingNode, i1_2);
+
+        //edges in layer 1
+        graphModel.insertEdge(v1_1, v1_2, layer1);
+        graphModel.insertEdge(v1_2, v1_3, layer1);
+        graphModel.insertEdge(v1_3, v1_4, layer1);
+        graphModel.insertEdge(v1_4, v1_1, layer1);
+        graphModel.insertEdge(v1_2, v1_4, layer1);
+
+        //layer 2
+        LayerDescriptor layer2 = new LayerDescriptor(2);
+        Vertex v2_1 = graphModel.insertVertex("E2_1", new Coordinates(0, 100, 200), layer2).get();
+        Vertex v2_2 = graphModel.insertVertex("E2_2", new Coordinates(0, 0, 200), layer2).get();
+        Vertex v2_3 = graphModel.insertVertex("E2_3", new Coordinates(100, 0, 200), layer2).get();
+        Vertex v2_4 = graphModel.insertVertex("E2_4", new Coordinates(100, 100, 200), layer2).get();
+        Vertex v2_5 = graphModel.insertVertex("E2_5", new Coordinates(100, 100, 200), layer2).get();
         Vertex v2_6 = graphModel.insertVertex("E2_6", new Coordinates(50, 50, 200), layer2).get();
         Vertex v2_7 = graphModel.insertVertex("E2_7", new Coordinates(50, 50, 200), layer2).get();
 
@@ -106,10 +154,10 @@ public class MainP6_P7 {
         InteriorNode i2_4 = graphModel.insertInterior("I2_4", layer2, v2_3, v2_4, v2_7).get();
 
         //edges between layer 1 and 2
-        graphModel.insertEdge(i1_1, i2_1);
-        graphModel.insertEdge(i1_1, i2_2);
-        graphModel.insertEdge(i1_2, i2_3);
-        graphModel.insertEdge(i1_2, i2_4);
+        graphModel.insertEdge(i1_1, i2_3);
+        graphModel.insertEdge(i1_1, i2_4);
+        graphModel.insertEdge(i1_2, i2_1);
+        graphModel.insertEdge(i1_2, i2_2);
 
         //edges in layer 2
         graphModel.insertEdge(v2_1, v2_2, layer2);
