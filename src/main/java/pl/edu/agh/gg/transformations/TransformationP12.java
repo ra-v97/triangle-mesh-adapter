@@ -12,27 +12,14 @@ import java.util.*;
 
 public class TransformationP12 implements DoubleInteriorTransformation {
 
-    private double getCordsBetweenX(Vertex v0, Vertex v1){
-        return (v0.getXCoordinate() + v1.getXCoordinate())/2;
-    }
-
-    private double getCordsBetweenY(Vertex v0, Vertex v1){
-        return (v0.getYCoordinate() + v1.getYCoordinate())/2;
-    }
-
-
-    public class UpperLayerValidator {
+    public static class UpperLayerValidator {
         public boolean isValid(List<Vertex> commonAdjacency, GraphModel graph) {
-            if (commonAdjacency.size() != 2
-                    || graph.getEdgeBetweenNodes(commonAdjacency.get(0), commonAdjacency.get(1)).isEmpty())
-                return false;
-
-            return true;
+            return commonAdjacency.size() == 2
+                    && graph.getEdgeBetweenNodes(commonAdjacency.get(0), commonAdjacency.get(1)).isPresent();
         }
     }
 
-
-    public class LowerLayerValidator {
+    public static class LowerLayerValidator {
         public boolean isValid(GraphModel graph, InteriorNode firstInterior, InteriorNode secondInterior) {
             Set<InteriorNode> adjInteriors1 = firstInterior.getAdjacentInteriors();
             ArrayList<InteriorNode> validAdj1 = new ArrayList<>();
@@ -146,8 +133,6 @@ public class TransformationP12 implements DoubleInteriorTransformation {
         }
     }
 
-
-
     @Override
     public boolean isApplicable(GraphModel graph, InteriorNode firstInterior, InteriorNode secondInterior) {
         Vertex[] firstInteriorAdjacents = firstInterior.getAdjacentVertices().toArray(new Vertex[0]);
@@ -167,19 +152,17 @@ public class TransformationP12 implements DoubleInteriorTransformation {
             }
         }
 
-        var upperLayerValidator = new TransformationP12.UpperLayerValidator();
-        if(!upperLayerValidator.isValid(commonAdjacents, graph))
+        var upperLayerValidator = new UpperLayerValidator();
+        if (!upperLayerValidator.isValid(commonAdjacents, graph))
             return false;
 
 
         // Validate lower layer
-        var lowerLayerValidator = new TransformationP12.LowerLayerValidator();
+        var lowerLayerValidator = new LowerLayerValidator();
         if (!lowerLayerValidator.isValid(graph, firstInterior, secondInterior))
             return false;
 
-
         return true;
-
     }
 
 
@@ -294,7 +277,7 @@ public class TransformationP12 implements DoubleInteriorTransformation {
                     }
                 }
 
-                if(hasFoundPair) {
+                if (hasFoundPair) {
                     LayerDescriptor layer_ = graph.resolveInteriorLayer(in1.getUUID()).get();
 
                     graph.removeEdge(pair2.getValue0(), pair2.getValue1());
