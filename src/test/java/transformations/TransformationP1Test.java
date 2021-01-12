@@ -31,14 +31,14 @@ public class TransformationP1Test {
     private InteriorNode initialInteriorNode;
 
     @BeforeEach
-    private void initializeTestCase(){
+    private void initializeTestCase() {
         transformation = new TransformationP1();
         graphModel = createLeftSideGraph();
         initialInteriorNode = GraphTestUtils.resolveGraphInterior(graphModel)
                 .orElseThrow(IllegalStateException::new);
     }
 
-    private GraphModel createLeftSideGraph(){
+    private GraphModel createLeftSideGraph() {
         final GraphModel graphModel = new GraphModel();
         graphModel.insertStartingInterior("S", initialLayerDescriptor, initialCoordinates);
         return graphModel;
@@ -148,7 +148,7 @@ public class TransformationP1Test {
                 new Coordinates(1, 1, 0));
         assertTrue(expectedVerticesCoords.stream()
                 .allMatch(coord -> graphModel.getVertices().stream()
-                        .anyMatch(actual -> Objects.equals(actual.getCoordinates(),  coord))));
+                        .anyMatch(actual -> Objects.equals(actual.getCoordinates(), coord))));
     }
 
     @Test

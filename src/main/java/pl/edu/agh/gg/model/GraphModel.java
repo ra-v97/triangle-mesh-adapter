@@ -62,7 +62,7 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                 ));
 
         graph.interiors.values().forEach(interior -> graph.resolveInteriorLayer(interior.getUUID())
-                .flatMap(layerDescriptor -> insertInterior(label, layerDescriptor, interior.getAdjacentVertices()))
+                .flatMap(layerDescriptor -> insertInterior(interior.getLabel(), layerDescriptor, interior.getAdjacentVertices()))
                 .ifPresent(newInterior -> interior.getAdjacentInteriors()
                         .forEach(newInterior::addAdjacentInteriorNode)));
 
@@ -89,11 +89,15 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                 });
     }
 
-    public Optional<Vertex> getVerticesOnLayerWithCords(Coordinates cord, LayerDescriptor layer){
-        return  layerVerticesIds.get(layer)
+    public LayerDescriptor getMaxLayer() {
+        return new LayerDescriptor(layerInteriorIds.keySet().size() - 1);
+    }
+
+    public Optional<Vertex> getVerticesOnLayerWithCords(Coordinates cord, LayerDescriptor layer) {
+        return layerVerticesIds.get(layer)
                 .stream()
                 .map(vertices::get)
-                .filter(x-> x.getCoordinates().equals(cord))
+                .filter(x -> x.getCoordinates().equals(cord))
                 .findFirst();
     }
 
@@ -140,6 +144,10 @@ public class GraphModel implements DisplayableGraph, Identifiable {
     }
 
     public Optional<InteriorNode> insertInterior(String label, LayerDescriptor layerDescriptor, Set<Vertex> vertices) {
+        if (vertices.size() == 0) {
+            return Optional.of(insertStartingInterior(label, layerDescriptor));
+        }
+
         if (vertices.size() != 3) {
             return Optional.empty();
         }
@@ -178,6 +186,10 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                     insertEdge(v2, interiorNode, layerDescriptor);
                     return interiorNode;
                 });
+    }
+
+    public StartingNode insertStartingInterior(String label, LayerDescriptor layerDescriptor) {
+        return insertStartingInterior(label, layerDescriptor, new Coordinates(0, 0, 0));
     }
 
     public StartingNode insertStartingInterior(String label, LayerDescriptor layerDescriptor, Coordinates coordinates) {
@@ -292,6 +304,16 @@ public class GraphModel implements DisplayableGraph, Identifiable {
 
     public Collection<InteriorNode> getInteriors() {
         return interiors.values();
+    }
+
+    public List<InteriorNode> getInteriorsOnLayer(LayerDescriptor layerDescriptor) {
+        return Optional.ofNullable(layerInteriorIds.get(layerDescriptor))
+                .map(uuidStream -> uuidStream
+                        .stream()
+                        .map(interiors::get)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList()))
+                .orElse(List.of());
     }
 
     public Optional<LayerDescriptor> resolveVertexLayer(UUID vertexId) {

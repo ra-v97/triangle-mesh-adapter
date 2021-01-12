@@ -7,4 +7,4 @@ public interface DoubleInteriorTransformation {
     boolean isApplicable(GraphModel graph, InteriorNode firstInterior, InteriorNode secondInterior);
 
     void transform(GraphModel graph, InteriorNode firstInterior, InteriorNode secondInterior);
-        }
+}

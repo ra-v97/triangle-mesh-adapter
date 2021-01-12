@@ -34,10 +34,9 @@ public class TransformationP9 implements Transformation {
         Vertex other = Sets.difference(interior.getAdjacentVertices(), longestEdgeVertices).stream().findAny().get();
         Vertex[] longest = longestEdgeVertices.toArray(new Vertex[]{});
 
-        Random random = new Random();
-        final Vertex v1 = graph.insertVertex(longest[0].getLabel() + random.nextInt(100), longest[0].getCoordinates(), nextLayerDescriptor).get();
-        final Vertex v2 = graph.insertVertex(other.getLabel() + random.nextInt(100), other.getCoordinates(), nextLayerDescriptor).get();
-        final Vertex v3 = graph.insertVertex(longest[1].getLabel() + random.nextInt(100), longest[1].getCoordinates(), nextLayerDescriptor).get();
+        final Vertex v1 = graph.insertVertex("V1", longest[0].getCoordinates(), nextLayerDescriptor).get();
+        final Vertex v2 = graph.insertVertex("V2", other.getCoordinates(), nextLayerDescriptor).get();
+        final Vertex v3 = graph.insertVertex("V3", longest[1].getCoordinates(), nextLayerDescriptor).get();
 
         graph.insertEdge(v1, v2, nextLayerDescriptor);
         graph.insertEdge(v2, v3, nextLayerDescriptor);
