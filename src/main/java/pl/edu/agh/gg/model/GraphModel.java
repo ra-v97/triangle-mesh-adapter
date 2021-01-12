@@ -89,6 +89,10 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                 });
     }
 
+    public LayerDescriptor getMaxLayer() {
+        return new LayerDescriptor(layerInteriorIds.keySet().size() - 1);
+    }
+
     public Optional<Vertex> getVerticesOnLayerWithCords(Coordinates cord, LayerDescriptor layer) {
         return layerVerticesIds.get(layer)
                 .stream()
@@ -140,7 +144,7 @@ public class GraphModel implements DisplayableGraph, Identifiable {
     }
 
     public Optional<InteriorNode> insertInterior(String label, LayerDescriptor layerDescriptor, Set<Vertex> vertices) {
-        if(vertices.size() == 0){
+        if (vertices.size() == 0) {
             return Optional.of(insertStartingInterior(label, layerDescriptor));
         }
 
@@ -185,7 +189,7 @@ public class GraphModel implements DisplayableGraph, Identifiable {
     }
 
     public StartingNode insertStartingInterior(String label, LayerDescriptor layerDescriptor) {
-        return insertStartingInterior(label, layerDescriptor, new Coordinates(0,0,0));
+        return insertStartingInterior(label, layerDescriptor, new Coordinates(0, 0, 0));
     }
 
     public StartingNode insertStartingInterior(String label, LayerDescriptor layerDescriptor, Coordinates coordinates) {

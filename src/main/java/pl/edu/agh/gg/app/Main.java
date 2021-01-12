@@ -22,7 +22,7 @@ import java.util.List;
 
 public class Main {
 
-    private static final int stepsToDo = 4;
+    private static final int stepsToDo = 1;
 
     public static void main(String[] args) {
 
@@ -42,19 +42,18 @@ public class Main {
         initialVisualizer.visualize(new LayerDescriptor(0));
 
         for (int i = 0; i < stepsToDo; i++) {
-            final int topLayer = i + 1;
             productionChainController.nextStep()
                     .ifPresent(graphModel -> {
+//                        final Visualizer vs = new Visualizer(graphModel);
+//                        vs.visualize(graphModel.getMaxLayer());
                         final Visualizer vs = new Visualizer(graph);
-                        vs.visualize(new LayerDescriptor(topLayer));
+                        vs.visualize();
                     });
         }
 
         // Full graph after transformations
-        productionChainController.activeStage().ifPresent(graphModel -> {
-            final Visualizer fullVisualizer = new Visualizer(graph);
-            fullVisualizer.visualize();
-        });
+        final Visualizer fullVisualizer = new Visualizer(graph);
+        fullVisualizer.visualize();
     }
 
     private static GraphModel createStartingGraph() {
