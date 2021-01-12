@@ -89,11 +89,11 @@ public class GraphModel implements DisplayableGraph, Identifiable {
                 });
     }
 
-    public Optional<Vertex> getVerticesOnLayerWithCords(Coordinates cord, LayerDescriptor layer){
-        return  layerVerticesIds.get(layer)
+    public Optional<Vertex> getVerticesOnLayerWithCords(Coordinates cord, LayerDescriptor layer) {
+        return layerVerticesIds.get(layer)
                 .stream()
                 .map(vertices::get)
-                .filter(x-> x.getCoordinates().equals(cord))
+                .filter(x -> x.getCoordinates().equals(cord))
                 .findFirst();
     }
 
@@ -292,6 +292,16 @@ public class GraphModel implements DisplayableGraph, Identifiable {
 
     public Collection<InteriorNode> getInteriors() {
         return interiors.values();
+    }
+
+    public List<InteriorNode> getInteriorsOnLayer(LayerDescriptor layerDescriptor) {
+        return Optional.ofNullable(layerInteriorIds.get(layerDescriptor))
+                .map(Collection::stream)
+                .map(uuidStream -> uuidStream
+                        .map(interiors::get)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList()))
+                .orElse(List.of());
     }
 
     public Optional<LayerDescriptor> resolveVertexLayer(UUID vertexId) {
