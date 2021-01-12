@@ -34,7 +34,7 @@ public class TransformationP12Test {
         graphModel = createLeftSideGraph();
         initialInteriorNodes = graphModel.getInteriors()
                 .stream()
-                .filter(p -> !p.getLabel().equals("s") && !isUpper(p.getLabel()))
+                .filter(p -> !p.getLabel().equals("s") && isUpper(p.getLabel()))
                 .collect(Collectors.toSet()).toArray(InteriorNode[]::new);
     }
 
@@ -175,7 +175,7 @@ public class TransformationP12Test {
     @Test
     void transformationShouldExecuteForDifferentLabel() {
         // When
-        initialInteriorNodes[0].setLabel("x");
+        initialInteriorNodes[0].setLabel("X");
         // Then
         assertTrue(transformation.isApplicable(graphModel, initialInteriorNodes[0], initialInteriorNodes[1]));
     }
