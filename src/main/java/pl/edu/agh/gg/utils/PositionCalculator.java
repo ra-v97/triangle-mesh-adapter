@@ -5,6 +5,10 @@ import pl.edu.agh.gg.model.Vertex;
 
 public final class PositionCalculator {
 
+    public static Coordinates getInteriorPosition(Vertex v1, Vertex v2) {
+        return getMidpointCoordinates(v1, v2);
+    }
+
     public static Coordinates getInteriorPosition(Vertex v1, Vertex v2, Vertex v3) {
         return new Coordinates(getInteriorXCoordinate(v1, v2, v3), getInteriorYCoordinate(v1, v2, v3), getInteriorZCoordinate(v1, v2, v3));
     }

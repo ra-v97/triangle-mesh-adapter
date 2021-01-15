@@ -1,5 +1,6 @@
 package pl.edu.agh.gg.common;
 
+import java.io.DataOutput;
 import java.util.Objects;
 
 public final class Coordinates {
@@ -56,16 +57,26 @@ public final class Coordinates {
 
     @Override
     public boolean equals(Object o) {
+        double epsilon = 0.001;
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Coordinates coordinates = (Coordinates) o;
-        return Double.compare(coordinates.x, x) == 0 &&
-                Double.compare(coordinates.y, y) == 0 &&
-                Double.compare(coordinates.z, z) == 0;
+        return Math.abs(coordinates.x- x) < epsilon &&
+                Math.abs(coordinates.y - y) < epsilon &&
+                Math.abs(coordinates.z - z) < epsilon;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(x, y, z);
+    }
+
+    @Override
+    public String toString() {
+        return "Coordinates{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
     }
 }
