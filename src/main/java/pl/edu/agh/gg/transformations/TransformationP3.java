@@ -30,7 +30,12 @@ public class TransformationP3 implements Transformation {
                 getCordsBetweenY(longest[0], longest[1]),
                 longest[0].getZCoordinate());
 
-        Optional<Vertex> vertBetween = graph.getVerticesBetween(longest[0], longest[1]).stream().findFirst();
+        LayerDescriptor layer = graph.resolveInteriorLayer(interior.getUUID()).get();
+        Optional<Vertex> vertBetween = graph.getVerticesOnLayerWithCords(
+                new Coordinates(getCordsBetweenX(longest[0], longest[1]), getCordsBetweenY(longest[0], longest[1]), longest[0].getZCoordinate()),
+                layer
+        );
+//        Optional<Vertex> vertBetween = graph.getVerticesBetween(longest[0], longest[1]).stream().findFirst();
         return vertBetween.isPresent() &&
                 vertBetween.get().getCoordinates().equals(coordsBetweenLongest) &&
                 !vertBetween.get().equals(other) &&
@@ -48,7 +53,13 @@ public class TransformationP3 implements Transformation {
         Set<Vertex> longestEdgeVertices = TransformationUtils.getLongestEdge(interior);
         Vertex other = Sets.difference(interior.getAdjacentVertices(), longestEdgeVertices).stream().findAny().get();
         Vertex[] longest = longestEdgeVertices.toArray(new Vertex[]{});
-        Vertex vertBetween = graph.getVerticesBetween(longest[0], longest[1]).stream().findFirst().get();
+
+        LayerDescriptor layer = graph.resolveInteriorLayer(interior.getUUID()).get();
+        Vertex vertBetween = graph.getVerticesOnLayerWithCords(
+                new Coordinates(getCordsBetweenX(longest[0], longest[1]), getCordsBetweenY(longest[0], longest[1]), longest[0].getZCoordinate()),
+                layer
+        ).get();
+//        Optional<Vertex> vertBetween = graph.getVerticesBetween(longest[0], longest[1]).stream().findFirst();
 
         final Vertex v1 = graph.insertVertex("V1", longest[0].getCoordinates(), nextLayerDescriptor).get();
         final Vertex v2 = graph.insertVertex("V2", other.getCoordinates(), nextLayerDescriptor).get();
